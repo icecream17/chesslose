@@ -54,6 +54,17 @@ globalThis.nets = nets;
 updateTextarea();
 
 document.getElementById('start').onclick = async function () {
+   if (round !== 0) {
+      let worst = [Infinity, 0]
+      for (let i = 0; i < bots.length; i++) {
+         if (bots[i].score === undefined) throw TypeError("undefineddd");
+         else if (bots[i].score < worst[0]) worst = [bots[i].score, i]
+      }
+      
+      console.log(`Replaced Bot #${i} - ${bots[i].toString()}`)
+      bots[i] = new Net(i);
+   }
+   
    while (true) {
       while (!chessgame.game_over()) {
          let input = await getInput();
