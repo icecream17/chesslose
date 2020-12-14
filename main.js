@@ -2,8 +2,8 @@ let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
 let speed = [70, 400]
 
-async function pause (ms) {
-   return await Promise(resolve => setTimeout(resolve, ms, "Done!");
+async function pause(ms) {
+   return await Promise(resolve => setTimeout(resolve, ms, "Done!"));
 }
 
 function getBoardConfig() {
@@ -37,7 +37,7 @@ function getBoardConfig() {
    }
 }
 
-function updateBoard () {
+function updateBoard() {
    chessboard.position(chessgame.fen(), false)
    console.clear()
    console.log(chessgame.fen())
@@ -54,7 +54,7 @@ let versions = []; for (let i = 0; i < 100; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
 updateTextarea();
-   
+
 async function playGame() {
    while (!chessgame.game_over()) {
       let input = await getInput();
@@ -79,27 +79,27 @@ document.getElementById('start').onclick = async function () {
          if (bots[i].score === undefined) throw TypeError("undefineddd");
          else if (bots[i].score < worst[0]) worst = [bots[i].score, i]
       }
-      
+
       console.log(`Replaced Bot #${worst[1]} - ${bots[i].toString()}`)
       bots[worst[1]] = new Net(worst[1]);
-      
+
       playerIDs = [worst[1], 0]
       if (worst[1] === 0) playerIDs[1] = 1
-      
+
       newBot = worst[1];
       versions[worst[1]] = versions[worst[1]] === undefined ? 1 : versions[worst[1]]++;
-      
+
       for (let i = 0; i < bots.length; i++) {
          if (bots[i].score[worst[i]] !== undefined) {
             bots[i].score[worst[i]] = [0, 0]
          }
       }
    }
-   
+
    while (true) {
       chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
-      
+
       await playGame();
       await pause(speed[1]);
 
@@ -133,16 +133,16 @@ document.getElementById('start').onclick = async function () {
             playerIDs[0]++
             if (playerIDs[0] === newBot) playerIDs[0]++
          }
-         
+
          if (playerIDs[1] === 100) {
             playerIDs[0] = newBot === 0 ? 1 : 0
             playerIDs[1] = newBot
          }
-         
+
          if (playerIDs[0] === 100) break;
       }
-         
-      await updateTextarea();
+
+      updateTextarea();
       games.push(chessgame.pgn());
       chessgame.reset();
    }
@@ -150,7 +150,7 @@ document.getElementById('start').onclick = async function () {
    round++;
 }
 
-function updateTextarea () {
+function updateTextarea() {
    document.getElementById('info').value = `Round ${round}
 Game #${gameID}
 Net ${playerIDs[0]}.${versions[playerIDs[0]]} vs Net ${playerIDs[1]}.${versions[playerIDs[1]]}
@@ -181,7 +181,7 @@ async function getInput() {
          input.push(value)
       }
    }
-   
+
    input.push(chessgame.fen().split(' ')[4] / 100);
 
    return input
@@ -192,7 +192,7 @@ async function doMove(output) {
       return (("abcdefgh".indexOf(movePart[0]) * 8) + Number(movePart[1]) - 32) / 64
    }
 
-   function promotionNumber (val) {
+   function promotionNumber(val) {
       if (val === undefined) return 0;
       else if (val === 'n') return -1;
       else if (val === 'b') return -0.5;
