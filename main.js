@@ -2,6 +2,10 @@ let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
 let speed = [70, 400]
 
+async function pause (ms) {
+   return await Promise(resolve => setTimeout(resolve, ms, "Done!");
+}
+
 function getBoardConfig() {
    function preventIllegalStart(source, piece, position, orientation) {
       let legalMoves = chessgame.moves({ verbose: true });
@@ -50,6 +54,22 @@ let versions = []; for (let i = 0; i < 100; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
 updateTextarea();
+   
+async function playGame() {
+   while (!chessgame.game_over()) {
+      let input = await getInput();
+      if (chessgame.turn() === chessgame.WHITE) {
+         let output = await nets[playerIDs[0]].run(input)
+         await doMove(output);
+      } else {
+         let output = await nets[playerIDs[1]].run(input)
+         await doMove(output);
+      }
+
+      await updateTextarea();
+      await pause(speed[0]);
+   }
+}
 
 document.getElementById('start').onclick = async function () {
    let newBot = null;
@@ -80,23 +100,8 @@ document.getElementById('start').onclick = async function () {
       chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
       
-      let gameInterval = setInterval(async function() {
-         if (chessgame.game_over()) {
-            clearInterval(gameInterval);
-            return
-         }
-         
-         let input = await getInput();
-         if (chessgame.turn() === chessgame.WHITE) {
-            let output = await nets[playerIDs[0]].run(...input)
-            await doMove(output);
-         } else {
-            let output = await nets[playerIDs[1]].run(...input)
-            await doMove(output);
-         }
-
-         await updateTextarea();
-      }, speed[0])
+      await playGame();
+      await pause(speed[1]);
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
