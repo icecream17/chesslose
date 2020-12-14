@@ -52,7 +52,7 @@ for (let i = 0; i < 100; i++) nets.push(new Net(i))
 let round = 0;
 let games = [];
 let gameID = 0;
-let versions = [];
+let versions = []; for (let i = 0; i < 100; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
 updateTextarea();
