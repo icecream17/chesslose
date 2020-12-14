@@ -43,7 +43,7 @@ globalThis.Neuron = class Neuron {
 
    get value () {
       if (this.indexOfLayer === 0) return squishify(this.#value + this.#bias);
-      if (this.nn.computed[this.indexOfLayer][this.indexInLayer] === true) return this.#value
+      if (this.nn.computed?.[this.indexOfLayer]?.[this.indexInLayer]) return this.#value
 
       let val = 0
       for (let i = 0; i < this.nn.layers[this.indexOfLayer - 1].neurons.length; i++) {
