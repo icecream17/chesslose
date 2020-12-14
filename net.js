@@ -145,9 +145,7 @@ globalThis.Net = class Net {
    }
 
    toString() {
-      let str = `[object Net] score: ${this.totalScore}\nx`
-      str += this.layers.map(layer => layer.length).join()
-      str += ` - ${this.lastOut}`
-      return str
+      return `[object Net] rating: ${this.rating}, score: ${this.totalScore}
+x${this.layers.map(layer => layer.length).join()} - ${this.lastOut}`
    }
 }
