@@ -42,16 +42,21 @@ globalThis.Neuron = class Neuron {
    }
 
    get value () {
-      if (this.indexOfLayer === 0) return this.#value + this.#bias
+      if (this.indexOfLayer === 0) return squishify(this.#value + this.#bias);
+      if (this.nn.computed[this.indexOfLayer][this.indexInLayer] === true) return this.#value
 
       let val = 0
       for (let i = 0; i < this.nn.layers[this.indexOfLayer - 1].neurons.length; i++) {
-         let neuron = this.nn.layers[this.indexOfLayer - 1].neurons.length;
-         val += neuron * this.layer.receivingWeights[i][this.indexInLayer];
+         let neuron = this.nn.layers[this.indexOfLayer - 1].neurons[i];
+         val += neuron.value * this.layer.receivingWeights[i][this.indexInLayer];
       }
 
       val += this.#bias;
       this.#value = squishify(val)
+      
+      if (this.nn.computed?.[this.indexOfLayer] === undefined) this.nn.computed[this.indexOfLayer] = []
+      this.nn.computed[this.indexOfLayer][this.indexInLayer] = true;
+          
       return Promise.resolve(this.#value);
    }
 
@@ -105,13 +110,16 @@ globalThis.Net = class Net {
 
       this.lastOut = null
       this.score = [];
+      
+      this.computed = [];
    }
 
    get id () {return this.#id;}
    get totalScore () {return this.score.reduce((accum, curr) => accum + curr, 0)}
 
    async run (...inputs) {
-      for (let i = 0; i < inputs.length; i++) this.layers[0][i] = inputs[i];
+      for (let i = 0; i < inputs.length; i++) this.layers[0].neurons[i].value = inputs[i];
+      this.computed = [];
 
       let out = []
       for (let outNode of this.layers[this.layers.length - 1].neurons) {
