@@ -38,7 +38,7 @@ function getBoardConfig() {
 }
 
 function updateBoard () {
-   chessboard.position(chessgame.fen())
+   chessboard.position(chessgame.fen(), false)
    console.clear()
    console.log(chessgame.fen())
    console.log(chessgame.ascii())
@@ -180,7 +180,7 @@ async function doMove(output) {
    }
 
    chessgame.move(best[1])
-   chessboard.position(chessgame.fen())
+   chessboard.position(chessgame.fen(), false)
 
 }
 
