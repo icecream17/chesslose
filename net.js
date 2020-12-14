@@ -120,7 +120,8 @@ globalThis.Net = class Net {
    }
 
    get id () {return this.#id;}
-   get totalScore () {return this.score.reduce((accum, curr) => accum + curr, 0)}
+   get totalScore () {return this.score.reduce((accum, curr) => accum + curr[0], 0)}
+   get rating () {return this.score.reduce((accum, curr, index) => accum + (curr[0] * nets[index].totalScore), 0)}
 
    async run (...inputs) {
       if (Array.isArray(inputs[0])) inputs = inputs[0]
