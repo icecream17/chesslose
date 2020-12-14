@@ -140,7 +140,7 @@ document.getElementById('start').onclick = async function () {
       }
          
       await updateTextarea();
-      games.push(chessgame);
+      games.push(chessgame.pgn());
       chessgame.reset();
    }
 
