@@ -1,6 +1,8 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
 
+let speed = [700, 2000]
+
 // for async functions
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -77,10 +79,10 @@ document.getElementById('start').onclick = async function () {
          }
 
          await updateTextarea();
-         await pause(1000);
+         await pause(speed[0]);
       }
 
-      await pause(5000);
+      await pause(speed[1]);
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].score[playerIDs[1]] = 0.5;
          nets[playerIDs[1]].score[playerIDs[0]] = 0.5;
