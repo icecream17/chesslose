@@ -1,22 +1,6 @@
 let chessboard = Chessboard('board1', getBoardConfig())
-let chessgame = new Chess()
-let clockticks = 0
-let clockneed = 0
-let clock = setInterval(()=>{
-   clockticks++;
-   if (clockneed > 0) clockneed--;
-}, 50);
 
-let speed = [7, 40]
-
-// for async functions
-async function pause(ticks) {
-   clockneed = ticks;
-   while (true) {
-      if (clockneed <= 0) return "Done!"
-      await null;
-   }
-}
+let speed = [70, 400]
 
 function getBoardConfig() {
    function preventIllegalStart(source, piece, position, orientation) {
@@ -95,7 +79,13 @@ document.getElementById('start').onclick = async function () {
    while (true) {
       chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
-      while (!chessgame.game_over()) {
+      
+      let gameInterval = setInterval(async function() {
+         if (chessgame.game_over()) {
+            clearInterval(gameInterval);
+            return
+         }
+         
          let input = await getInput();
          if (chessgame.turn() === chessgame.WHITE) {
             let output = await nets[playerIDs[0]].run(...input)
@@ -106,10 +96,8 @@ document.getElementById('start').onclick = async function () {
          }
 
          await updateTextarea();
-         await pause(speed[0]);
-      }
+      }, speed[0])
 
-      await pause(speed[1]);
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
          nets[playerIDs[1]].updateScore(playerIDs[0], 0.4)
