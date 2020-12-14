@@ -77,10 +77,10 @@ document.getElementById('start').onclick = async function () {
       while (!chessgame.game_over()) {
          let input = await getInput();
          if (chessgame.turn() === chessgame.WHITE) {
-            let output = await nets[playerIDs[0]].run(input)
+            let output = await nets[playerIDs[0]].run(...input)
             await doMove(output);
          } else {
-            let output = await nets[playerIDs[1]].run(input)
+            let output = await nets[playerIDs[1]].run(...input)
             await doMove(output);
          }
 
