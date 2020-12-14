@@ -28,7 +28,7 @@ function getBoardConfig() {
    }
 
    return {
-      pieceTheme: 'alpha/{piece}.png',
+      pieceTheme: '{piece}.png',
       draggable: true,
       position: "start",
       onDragStart: preventIllegalStart,
