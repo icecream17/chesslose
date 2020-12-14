@@ -83,8 +83,8 @@ document.getElementById('start').onclick = async function () {
    }
    
    while (true) {
-      chessgame.header("White", `Net ${nets[playerIDs[0]]}.${versions[playerIDs[0]]}`);
-      chessgame.header("Black", `Net ${nets[playerIDs[1]]}.${versions[playerIDs[1]]}`);
+      chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
+      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
       while (!chessgame.game_over()) {
          let input = await getInput();
          if (chessgame.turn() === chessgame.WHITE) {
