@@ -50,7 +50,9 @@ let nets = [];
 for (let i = 0; i < 100; i++) nets.push(new Net(i))
 
 let round = 0;
+let games = [];
 let gameID = 0;
+let versions = [];
 let playerIDs = [0, 1];
 globalThis.nets = nets;
 updateTextarea();
@@ -71,6 +73,7 @@ document.getElementById('start').onclick = async function () {
       if (worst[1] === 0) playerIDs[1] = 1
       
       newBot = worst[1];
+      versions[worst[1]] = versions[worst[1]] === undefined ? 1 : versions[worst[1]]++;
       
       for (let i = 0; i < bots.length; i++) {
          if (bots[i].score[worst[i]] !== undefined) {
@@ -80,6 +83,8 @@ document.getElementById('start').onclick = async function () {
    }
    
    while (true) {
+      chessgame.header("White", `Net ${nets[playerIDs[0]]}.${versions[playerIDs[0]]}`);
+      chessgame.header("Black", `Net ${nets[playerIDs[1]]}.${versions[playerIDs[1]]}`);
       while (!chessgame.game_over()) {
          let input = await getInput();
          if (chessgame.turn() === chessgame.WHITE) {
@@ -135,6 +140,7 @@ document.getElementById('start').onclick = async function () {
       }
          
       await updateTextarea();
+      games.push(chessgame);
       chessgame.reset();
    }
 
@@ -144,7 +150,7 @@ document.getElementById('start').onclick = async function () {
 function updateTextarea () {
    document.getElementById('info').value = `Round ${round}
 Game #${gameID}
-Net ${playerIDs[0]} vs Net ${playerIDs[1]}
+Net ${playerIDs[0]}.${versions[playerIDs[0]]} vs Net ${playerIDs[1]}.${versions[playerIDs[1]]}
 
 0: ${nets[playerIDs[0]].toString()}
 1: ${nets[playerIDs[1]].toString()}
