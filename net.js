@@ -118,6 +118,8 @@ globalThis.Net = class Net {
    get totalScore () {return this.score.reduce((accum, curr) => accum + curr, 0)}
 
    async run (...inputs) {
+      if (Array.isArray(inputs[0])) inputs = inputs[0]
+          
       for (let i = 0; i < inputs.length; i++) this.layers[0].neurons[i].value = inputs[i];
       this.computed = [];
 
