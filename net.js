@@ -47,8 +47,8 @@ globalThis.Neuron = class Neuron {
 
       let val = 0
       for (let i = 0; i < this.nn.layers[this.indexOfLayer - 1].neurons.length; i++) {
-         let neuron = this.nn.layers[this.indexOfLayer - 1].neurons[i];
-         val += neuron.value * this.layer.receivingWeights[i][this.indexInLayer];
+         this.nn.layers[this.indexOfLayer - 1].neurons[i].value
+            .then(result => val += result * this.layer.receivingWeights[i][this.indexInLayer]);
       }
 
       val += this.#bias;
