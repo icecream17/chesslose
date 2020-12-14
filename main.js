@@ -58,19 +58,25 @@ updateTextarea();
 document.getElementById('start').onclick = async function () {
    let newBot = null;
    if (round !== 0) {
-      let worst = [Infinity, 0]
+      let worst = [Infinity, 0];
       for (let i = 0; i < bots.length; i++) {
          if (bots[i].score === undefined) throw TypeError("undefineddd");
          else if (bots[i].score < worst[0]) worst = [bots[i].score, i]
       }
       
-      console.log(`Replaced Bot #${i} - ${bots[i].toString()}`)
-      bots[i] = new Net(i);
+      console.log(`Replaced Bot #${worst[1]} - ${bots[i].toString()}`)
+      bots[worst[1]] = new Net(worst[1]);
       
-      playerIDs = [i, 0]
-      if (i === 0) playerIDs[1] = 1
+      playerIDs = [worst[1], 0]
+      if (worst[1] === 0) playerIDs[1] = 1
       
-      newBot = i;
+      newBot = worst[1];
+      
+      for (let i = 0; i < bots.length; i++) {
+         if (bots[i].score[worst[i]] !== undefined) {
+            bots[i].score[worst[i]] = [0, 0]
+         }
+      }
    }
    
    while (true) {
@@ -90,14 +96,14 @@ document.getElementById('start').onclick = async function () {
 
       await pause(speed[1]);
       if (chessgame.in_draw()) {
-         nets[playerIDs[0]].score[playerIDs[1]] = 0.5;
-         nets[playerIDs[1]].score[playerIDs[0]] = 0.5;
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0.5);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0.5)
       } else if (chessgame.turn() === chessgame.WHITE) {
-         nets[playerIDs[0]].score[playerIDs[1]] = 1;
-         nets[playerIDs[1]].score[playerIDs[0]] = 0;
+         nets[playerIDs[0]].updateScore(playerIDs[1], 1);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0)
       } else {
-         nets[playerIDs[0]].score[playerIDs[1]] = 0;
-         nets[playerIDs[1]].score[playerIDs[0]] = 1;
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 1)
       }
 
       if (round === 0) {
