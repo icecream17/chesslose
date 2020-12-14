@@ -1,0 +1,19 @@
+{
+   "parserOptions": {
+      "ecmaVersion": 12,
+      "sourceType": "module"
+   },
+   "plugins": [
+      "juqery"
+   ],
+   "env": {
+      "browser": true
+   },
+   "globals": {
+      "ts": "readonly",
+      "Carrot": "readonly",
+      "Chess": "writable",
+      "Chessboard": "readonly",
+      "_": "readonly"
+   }
+}
