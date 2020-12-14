@@ -56,6 +56,7 @@ globalThis.nets = nets;
 updateTextarea();
 
 document.getElementById('start').onclick = async function () {
+   let newBot = null;
    if (round !== 0) {
       let worst = [Infinity, 0]
       for (let i = 0; i < bots.length; i++) {
@@ -65,6 +66,11 @@ document.getElementById('start').onclick = async function () {
       
       console.log(`Replaced Bot #${i} - ${bots[i].toString()}`)
       bots[i] = new Net(i);
+      
+      playerIDs = [i, 0]
+      if (i === 0) playerIDs[1] = 1
+      
+      newBot = i;
    }
    
    while (true) {
@@ -94,17 +100,34 @@ document.getElementById('start').onclick = async function () {
          nets[playerIDs[1]].score[playerIDs[0]] = 1;
       }
 
-      playerIDs[1]++;
-      gameID++;
+      if (round === 0) {
+         playerIDs[1]++;
+         gameID++;
 
-      if (playerIDs[1] === 100) {
-         playerIDs[0]++;
-         playerIDs[1] = 0;
+         if (playerIDs[1] === 100) {
+            playerIDs[0]++;
+            playerIDs[1] = 0;
+         }
+
+         if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
+         if (playerIDs[1] === 100) break;
+      } else {
+         if (playerIDs[0] === newBot) {
+            playerIDs[1]++
+            if (playerIDs[1] === newBot) playerIDs[1]++
+         } else {
+            playerIDs[0]++
+            if (playerIDs[0] === newBot) playerIDs[0]++
+         }
+         
+         if (playerIDs[1] === 100) {
+            playerIDs[0] = newBot === 0 ? 1 : 0
+            playerIDs[1] = newBot
+         }
+         
+         if (playerIDs[0] === 100) break;
       }
-
-      if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
-      if (playerIDs[1] === 100) break;
-
+         
       await updateTextarea();
       chessgame.reset();
    }
