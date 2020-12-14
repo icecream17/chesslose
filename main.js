@@ -146,8 +146,8 @@ function updateTextarea () {
 Game #${gameID}
 Net ${playerIDs[0]} vs Net ${playerIDs[1]}
 
-0: ${nets[0].toString()}
-1: ${nets[1].toString()}
+0: ${nets[playerIDs[0]].toString()}
+1: ${nets[playerIDs[1]].toString()}
 
 ${chessgame.pgn()}`
 }
