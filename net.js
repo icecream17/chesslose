@@ -30,6 +30,11 @@ function squishify(value) {
    return Math.tanh(value);
 }
 
+Number.prototype.then = function sillyThen(func) {
+   func(this.valueOf())
+}
+
+
 globalThis.Neuron = class Neuron {
    #value = randomInRange(-1, 1);
    #bias = randomInRange(-1, 1);
