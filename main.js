@@ -1,11 +1,21 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
+let clockticks = 0
+let clockneed = 0
+let clock = setInterval(()=>{
+   clockticks++;
+   if (clockneed > 0) clockneed--;
+}, 50);
 
-let speed = [700, 2000]
+let speed = [7, 40]
 
 // for async functions
-async function pause(ms) {
-   return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
+async function pause(ticks) {
+   clockneed = ticks;
+   while (true) {
+      if (clockneed <= 0) return "Done!"
+      await null;
+   }
 }
 
 function getBoardConfig() {
