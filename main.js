@@ -178,6 +178,8 @@ async function getInput() {
          input.push(value)
       }
    }
+   
+   input.push(chessgame.fen().split(' ')[4]);
 
    return input
 }
