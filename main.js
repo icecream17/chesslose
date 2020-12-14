@@ -77,10 +77,10 @@ document.getElementById('start').onclick = async function () {
          }
 
          await updateTextarea();
-         await pause(100);
+         await pause(1000);
       }
 
-      await pause(250);
+      await pause(5000);
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].score[playerIDs[1]] = 0.5;
          nets[playerIDs[1]].score[playerIDs[0]] = 0.5;
