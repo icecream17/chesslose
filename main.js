@@ -179,7 +179,7 @@ async function getInput() {
       }
    }
    
-   input.push(chessgame.fen().split(' ')[4]);
+   input.push(chessgame.fen().split(' ')[4] / 100);
 
    return input
 }
