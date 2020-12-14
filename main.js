@@ -3,7 +3,7 @@ let chessgame = new Chess()
 let speed = [70, 400]
 
 async function pause(ms) {
-   return await Promise(resolve => setTimeout(resolve, ms, "Done!"));
+   return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
 }
 
 function getBoardConfig() {
