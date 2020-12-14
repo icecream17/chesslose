@@ -106,7 +106,7 @@ globalThis.Net = class Net {
       this.#id = id;
       this.layers = [];
 
-      this.layers.push(new Layer(this, 0, 64));
+      this.layers.push(new Layer(this, 0, 65)); // 64 squares + half moves
       for (let i = 1; i < randomInteger(3, 7); i++) {
          this.layers.push(new Layer(this, i));
       }
