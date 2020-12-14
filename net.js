@@ -136,6 +136,12 @@ globalThis.Net = class Net {
       this.lastOut = out;
       return out;
    }
+          
+   updateScore(botIndex, result) {
+      if (this.score[botIndex] === undefined) this.score[botIndex] = [0, 0]
+      this.score[botIndex][0] += result;
+      this.score[botIndex][1]++;
+   }
 
    toString() {
       let str = `[object Net] score: ${this.totalScore}\nx`
