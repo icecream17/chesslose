@@ -1,5 +1,5 @@
 let chessboard = Chessboard('board1', getBoardConfig())
-
+let chessgame = new Chess()
 let speed = [70, 400]
 
 function getBoardConfig() {
