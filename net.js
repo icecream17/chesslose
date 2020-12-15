@@ -122,6 +122,7 @@ globalThis.Net = class Net {
    get id () {return this.#id;}
    get totalScore () {return this.score.reduce((accum, curr) => accum + curr[0], 0)}
    get rating () {return this.score.reduce((accum, curr, index) => accum + (curr[0] * nets[index].totalScore), 0)}
+   get ranking () {return 1 + nets.filter(net => net.rating > this.rating).length)
 
    async run (...inputs) {
       if (Array.isArray(inputs[0])) inputs = inputs[0]
@@ -145,7 +146,7 @@ globalThis.Net = class Net {
    }
 
    toString() {
-      return `[object Net] rating: ${this.rating}, score: ${this.totalScore}
+      return `[object Net] rating: ${this.rating}, rank: ${this.ranking}, score: ${this.totalScore}
 x${this.layers.map(layer => layer.length).join()} - ${this.lastOut}`
    }
 }
