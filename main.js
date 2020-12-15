@@ -1,7 +1,7 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
 let speed = [70, 400]
-const NUMBER_OF_NETS = 20;
+const NUMBER_OF_NETS = 7;
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -77,10 +77,12 @@ async function playGame() {
 document.getElementById('start').onclick = async function () {
    let newBot = null;
    if (round !== 0) {
-      let worst = [Infinity, 0];
+      let worst = null;
       for (let i = 0; i < bots.length; i++) {
-         if (bots[i].score === undefined) throw TypeError("undefineddd");
-         else if (bots[i].score < worst[0]) worst = [bots[i].score, i]
+         if (bots[i].ranking === bots.length) {
+            worst = [bots[i], i];
+            break;
+         }
       }
 
       console.log(`Replaced Bot #${worst[1]} - ${bots[i].toString()}`)
@@ -90,7 +92,7 @@ document.getElementById('start').onclick = async function () {
       if (worst[1] === 0) playerIDs[1] = 1
 
       newBot = worst[1];
-      versions[worst[1]] = versions[worst[1]] === undefined ? 1 : versions[worst[1]]++;
+      versions[worst[1]]++;
 
       for (let i = 0; i < bots.length; i++) {
          if (bots[i].score[worst[i]] !== undefined) {
