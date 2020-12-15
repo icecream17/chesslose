@@ -65,10 +65,11 @@ async function playGame() {
          let output = await nets[playerIDs[1]].run(input)
          await doMove(output);
       }
+   
+      await updateTextarea();
       // await pause(speed[0]);
    }
    
-   await updateTextarea();
    return;
 }
 
@@ -102,7 +103,7 @@ document.getElementById('start').onclick = async function () {
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
 
       await playGame();
-      await pause(speed[1]);
+      // await pause(speed[1]);
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
