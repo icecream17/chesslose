@@ -67,7 +67,7 @@ async function playGame() {
       }
 
       await updateTextarea();
-      await pause(speed[0]);
+      // await pause(speed[0]);
    }
 }
 
