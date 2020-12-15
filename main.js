@@ -78,15 +78,15 @@ document.getElementById('start').onclick = async function () {
    let newBot = null;
    if (round !== 0) {
       let worst = null;
-      for (let i = 0; i < bots.length; i++) {
-         if (bots[i].ranking === bots.length) {
-            worst = [bots[i], i];
+      for (let i = 0; i < nets.length; i++) {
+         if (nets[i].ranking === nets.length) {
+            worst = [nets[i], i];
             break;
          }
       }
 
-      console.log(`Replaced Bot #${worst[1]} - ${bots[i].toString()}`)
-      bots[worst[1]] = new Net(worst[1]);
+      console.log(`Replaced Bot #${worst[1]} - ${nets[i].toString()}`)
+      nets[worst[1]] = new Net(worst[1]);
 
       playerIDs = [worst[1], 0]
       if (worst[1] === 0) playerIDs[1] = 1
@@ -94,9 +94,9 @@ document.getElementById('start').onclick = async function () {
       newBot = worst[1];
       versions[worst[1]]++;
 
-      for (let i = 0; i < bots.length; i++) {
-         if (bots[i].score[worst[i]] !== undefined) {
-            bots[i].score[worst[i]] = [0, 0]
+      for (let i = 0; i < nets.length; i++) {
+         if (nets[i].score[worst[i]] !== undefined) {
+            nets[i].score[worst[i]] = [0, 0]
          }
       }
    }
