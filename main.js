@@ -65,10 +65,11 @@ async function playGame() {
          let output = await nets[playerIDs[1]].run(input)
          await doMove(output);
       }
-
-      await updateTextarea();
       // await pause(speed[0]);
    }
+   
+   await updateTextarea();
+   return;
 }
 
 document.getElementById('start').onclick = async function () {
