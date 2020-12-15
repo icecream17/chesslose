@@ -85,7 +85,7 @@ document.getElementById('start').onclick = async function () {
          }
       }
 
-      console.log(`Replaced Bot #${worst[1]} - ${nets[i].toString()}`)
+      console.log(`Replaced Bot #${worst[1]} - ${nets[worst[1]].toString()}`)
       nets[worst[1]] = new Net(worst[1]);
 
       playerIDs = [worst[1], 0]
