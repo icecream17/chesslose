@@ -1,6 +1,7 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 let chessgame = new Chess()
 let speed = [70, 400]
+const NUMBER_OF_NETS = 20;
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -45,12 +46,12 @@ function updateBoard() {
 }
 
 let nets = [];
-for (let i = 0; i < 100; i++) nets.push(new Net(i))
+for (let i = 0; i < NUMBER_OF_NETS; i++) nets.push(new Net(i))
 
 let round = 0;
 let games = [];
 let gameID = 0;
-let versions = []; for (let i = 0; i < 100; i++) versions.push(0);
+let versions = []; for (let i = 0; i < NUMBER_OF_NETS; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
 updateTextarea();
@@ -67,7 +68,7 @@ async function playGame() {
       }
    
       await updateTextarea();
-      // await pause(speed[0]);
+      await pause(speed[0]);
    }
    
    return;
@@ -103,7 +104,7 @@ document.getElementById('start').onclick = async function () {
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
 
       await playGame();
-      // await pause(speed[1]);
+      await pause(speed[1]);
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
@@ -120,13 +121,13 @@ document.getElementById('start').onclick = async function () {
          playerIDs[1]++;
          gameID++;
 
-         if (playerIDs[1] === 100) {
+         if (playerIDs[1] === NUMBER_OF_NETS) {
             playerIDs[0]++;
             playerIDs[1] = 0;
          }
 
          if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
-         if (playerIDs[1] === 100) break;
+         if (playerIDs[1] === NUMBER_OF_NETS) break;
       } else {
          if (playerIDs[0] === newBot) {
             playerIDs[1]++
@@ -136,12 +137,12 @@ document.getElementById('start').onclick = async function () {
             if (playerIDs[0] === newBot) playerIDs[0]++
          }
 
-         if (playerIDs[1] === 100) {
+         if (playerIDs[1] === NUMBER_OF_NETS) {
             playerIDs[0] = newBot === 0 ? 1 : 0
             playerIDs[1] = newBot
          }
 
-         if (playerIDs[0] === 100) break;
+         if (playerIDs[0] === NUMBER_OF_NETS) break;
       }
 
       updateTextarea();
