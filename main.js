@@ -58,6 +58,13 @@ globalThis.netStorage = nets.slice().map(net => [net])
 updateTextarea();
 
 async function playGame() {
+   // Opening
+   for (let i = 0; i < 10; i++) {
+      let moves = chessgame.moves().filter(move => !move.includes("#"))
+      let move = moves[Math.floor(Math.random() * moves.length)]
+      chessgame.move(move)
+   }
+   
    while (!chessgame.game_over()) {
       let input = await getInput();
       if (chessgame.turn() === chessgame.WHITE) {
