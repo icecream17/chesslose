@@ -173,6 +173,8 @@ document.getElementById('start').onclick = async function () {
       }
 
       gameID++;
+      updateTextarea();
+      
       if (nonNew.includes(playerIDs[0])) {
          if (playerIDs[1] === newBots[newBots.length - 1]) {
             if (playerIDs[0] === nonNew[nonNew.length - 1]) {
@@ -199,7 +201,6 @@ document.getElementById('start').onclick = async function () {
          }
       }
       
-      updateTextarea();
       games.push(chessgame.pgn());
       chessgame.reset();
    }
