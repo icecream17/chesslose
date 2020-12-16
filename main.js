@@ -141,6 +141,7 @@ document.getElementById('start').onclick = async function () {
 
       if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
       if (playerIDs[1] === NUMBER_OF_NETS) {
+         playerIDs[1] = NUMBER_OF_NETS - 1;
          updateTextarea();
          games.push(chessgame.pgn());
          chessgame.reset();
