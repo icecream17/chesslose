@@ -128,13 +128,13 @@ document.getElementById('start').onclick = async function () {
       await pause(speed[1]);
 
       if (chessgame.in_draw()) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0.4);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
       } else if (chessgame.turn() === chessgame.WHITE) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 1);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0.5);
       } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0.5);
          nets[playerIDs[1]].updateScore(playerIDs[0], 1);
       }
 
@@ -169,13 +169,13 @@ document.getElementById('start').onclick = async function () {
       await pause(speed[1]);
 
       if (chessgame.in_draw()) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0.4);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
       } else if (chessgame.turn() === chessgame.WHITE) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 1);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0.5);
       } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0.5);
          nets[playerIDs[1]].updateScore(playerIDs[0], 1);
       }
 
