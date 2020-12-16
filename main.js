@@ -54,6 +54,7 @@ let gameID = 0;
 let versions = []; for (let i = 0; i < NUMBER_OF_NETS; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
+globalThis.netStorage = nets.slice().map(net => [net])
 updateTextarea();
 
 async function playGame() {
@@ -75,7 +76,7 @@ async function playGame() {
 }
 
 document.getElementById('start').onclick = async function () {
-   let newBot = null;
+   let newBots = [];
    if (round !== 0) {
       let worstnets = [];
       let worstscore = Infinity;
@@ -93,22 +94,26 @@ document.getElementById('start').onclick = async function () {
       for (let badnet of worstnets) {
          console.log(`Replaced Bot #${badnet[1]} - ${badnet[0].toString()}`)
          nets[badnet[1]] = new Net(badnet[1]);
+         netStorage[badnet[1]].push(nets[badnet[1]])
 
-         playerIDs = [badnet[1], 0]
-         if (worst[1] === 0) playerIDs[1] = 1
-
-         newBot = worst[1];
-         versions[worst[1]]++;
+         newBots.push(badnet[1]);
+         versions[badnet[1]]++;
 
          for (let i = 0; i < nets.length; i++) {
-            if (nets[i].score[worst[i]] !== undefined) {
-               nets[i].score[worst[i]] = [0, 0]
+            if (nets[i].score[badnet[1]] !== undefined) {
+               nets[i].score[badnet[1]] = [0, 0]
             }
          }
       }
+      
+      
+      playerIDs = [worstnets[0][1], 0]
+      if (playerIDs[1] === 0) playerIDs[1] = 1
+   } else {
+      newBots = nets.map((net, index) => index);
    }
 
-   while (true) {
+   while (round === 0) {
       chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
 
@@ -117,46 +122,71 @@ document.getElementById('start').onclick = async function () {
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0.4)
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0.4);
       } else if (chessgame.turn() === chessgame.WHITE) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 1);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0)
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
       } else {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 1)
+         nets[playerIDs[1]].updateScore(playerIDs[0], 1);
       }
 
-      if (round === 0) {
-         playerIDs[1]++;
-         gameID++;
+      playerIDs[1]++;
+      gameID++;
 
-         if (playerIDs[1] === NUMBER_OF_NETS) {
-            playerIDs[0]++;
-            playerIDs[1] = 0;
-         }
-
-         if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
-         if (playerIDs[1] === NUMBER_OF_NETS) break;
-      } else {
-         if (playerIDs[0] === newBot) {
-            playerIDs[1]++
-            if (playerIDs[1] === newBot) playerIDs[1]++
-         } else {
-            playerIDs[0]++
-            if (playerIDs[0] === newBot) playerIDs[0]++
-         }
-
-         if (playerIDs[1] === NUMBER_OF_NETS) {
-            playerIDs[0] = newBot === 0 ? 1 : 0
-            playerIDs[1] = newBot
-         }
-
-         if (playerIDs[0] === NUMBER_OF_NETS) break;
+      if (playerIDs[1] === NUMBER_OF_NETS) {
+         playerIDs[0]++;
+         playerIDs[1] = 0;
       }
+
+      if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
+      if (playerIDs[1] === NUMBER_OF_NETS) break;
 
       updateTextarea();
       games.push(chessgame.pgn());
       chessgame.reset();
+   }
+   
+   let done = [];
+   for (let nonNew = nets.map((net, index) => index).filter(index => !newBots.includes(index)); round !== 0;) {
+      chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
+      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
+
+      await playGame();
+      await pause(speed[1]);
+
+      if (chessgame.in_draw()) {
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0.4);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0.4);
+      } else if (chessgame.turn() === chessgame.WHITE) {
+         nets[playerIDs[0]].updateScore(playerIDs[1], 1);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
+      } else {
+         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 1);
+      }
+
+      gameID++;
+      if (nonNew.includes(playerIDs[0])) {
+         if (playerIDs[1] === newBots[newBots.length - 1]) {
+            if (playerIDs[0] === nonNew[nonNew.length - 1]) break;
+            playerIDs[0] = nonNew[nonNew.indexOf(playerIDs[0]) + 1]
+            playerIDs[1] = newBots[0]
+         } else {
+            playerIDs[1] = newBots[newBots.indexOf(playerIDs[0]) + 1]
+         }
+      } else {
+         playerIDs[1]++;
+         if (playerIDs[0] === playerIDs[1]) playerIDs[1]++;
+         if (playerIDs[1] >= nets.length) {
+            if (playerIDs[0] === newBots[newBots.length - 1]) {
+               playerIDs = [nonNew[0], newBots[0]]
+            } else {
+               playerIDs[0] = newBots[newBots.indexOf(playerIDs[0]) + 1]
+               playerIDs[1] = 0
+            }
+         }
+      }
    }
 
    round++;
