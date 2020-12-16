@@ -15,3 +15,9 @@
 [Black "Net [object Net] 1.1"]
 
 1. Nc3 c5 2. Ne4 Qa5 3. Ng5 Na6 4. Nxh7 Nh6 5. Nh3 d6 6. Rb1 Qxa2 7. Ra1 Bxh3 8. gxh3 Rxh7 9. Bg2 b5 10. O-O b4 11. Qe1 Rh8 12. Rb1 Rh7 13. Kh1 c4 14. Rg1 Rh8 15. Qf1 Rh7 16. e4 Rh8 17. d4 cxd3 18. Bxh6 gxh6 19. Re1 Bg7 20. cxd3 Kf8 21. f4 Kg8 22. Re3 Rf8 23. Rg3 b3 24. Rxg7+ Kxg7 25. Qf3 Rfg8 26. Qh5 d5 27. Qxh6+ Kxh6 28. e5 Kh7 29. e6 Qa1 30. exf7 Nb4 31. fxg8=Q+ Kxg8 32. f5 Na2 33. f6 a5 34. f7+ Kxf7 35. d4 a4 36. h4 Nc1 37. Bh3 Na2 38. h5 a3 39. h6 axb2 40. h7 b1=N 41. Rg8 Na3+ 42. Rg1 b2 43. Bg4 Kg7 44. Bh5+ Qxg1+ 45. Kxg1 b1=Q+ 46. Kg2 Qa1 47. Kh3 Nb1 48. Be2 Na3 49. Bg4 Nb1 50. Bc8 Kxh7 51. Bg4 Na3 52. Bh5 Nb1 53. Kh4 Na3 54. h3 Nb1 55. Bg6+ Kh6 56. Bxb1 Rh7 57. Bxh7 Qb1 58. Bxb1 Nb4 59. Ba2 Nxa2 60. Kg3 Kh7 61. Kh4 e6 62. Kh5 Nb4 63. h4 Kh8 64. Kh6 Na2 65. h5 Nb4 66. Kg6 Nd3 67. Kf6 Nf4 68. Ke5 Nxh5 69. Kxe6 Kh7 70. Kxd5 Nf4+ 71. Ke5 Nd3+ 72. Ke6 Nf4+ 73. Kd6 Nh5 74. Kc5 Kh8 75. Kd6 Nf6 76. Ke7 Nh7 77. Kf7 Ng5+ 78. Kg6 Ne4 79. d5 Nc3 80. d6 Na2 81. d7 Nb4 82. d8=Q#
+
+[Round 0]
+[White "Net [object Net] 3.0"]
+[Black "Net [object Net] 0.0"]
+
+1. Nc3 Nc6 2. Ne4 Ne5 3. Ng5 Ng6 4. Nxh7 a5 5. Nh3 a4 6. b4 a3 7. c4 Ra4 8. d4 Ra5 9. Bh6 Rh5 10. Rc1 b5 11. e4 bxc4 12. Qxh5 Ba6 13. Rd1 Bc8 14. f4 Ba6 15. Kf2 Bb5 16. Kg3 Ba4 17. Re1 Bb3 18. Re3 Bxa2 19. b5 Bb1 20. Rf3 Bxe4 21. b6 a2 22. bxc7 Bf5 23. cxd8=N Bxh3 24. Nxf7 Kxf7 25. gxh3 a1=Q 26. Bg2 Qa2 27. d5 Qxg2+ 28. Kxg2 c3 29. Rg3 c2 30. Rxg6 c1=N 31. Rxg7#
