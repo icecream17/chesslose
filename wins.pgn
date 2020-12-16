@@ -1,9 +1,17 @@
+[Round 0]
 [White "Net [object Net] 0.0"]
 [Black "Net [object Net] 9.0"]
 
 1. Nc3 Na6 2. Ne4 Nf6 3. Ng5 Nd5 4. Nxh7 Ndb4 5. Nh3 Nxa2 6. Rb1 Rg8 7. b4 b5 8. c4 Bb7 9. d4 Qb8 10. Rb3 Kd8 11. Rg3 Kc8 12. Bh6 c5 13. bxc5 d5 14. cxd6 exd6 15. Rxg7 Be7 16. Qd3 Rd8 17. Qg6 f5 18. cxb5 f4 19. bxa6 Bxa6 20. d5 Kb7 21. Qh5 Rc8 22. e4 fxe3 23. f4 Rc1+ 24. Qd1 Ra1 25. g4 Kb6 26. Qxa1 Ka5 27. Qf6 Qb1#
 
+[Round 0]
 [White "Net [object Net] 1.0"]
 [Black "Net [object Net] 2.0"]
 
 1. Nf3 h6 2. h4 Rh7 3. Nd4 Rh8 4. Rg1 Rh7 5. Nb3 Nf6 6. Na5 Rh8 7. Na3 Rh7 8. h5 Rh8 9. b3 Rh7 10. Bb2 Rh8 11. Qb1 Rh7 12. Kd1 Rh8 13. Kc1 Rh7 14. c3 Rh8 15. c4 Rh7 16. c5 Rh8 17. c6 Rh7 18. cxb7 Rh8 19. bxa8=Q Rh7 20. Qxa7 g5 21. hxg6 Rg7 22. gxf7+ Rxf7 23. Qa6 Nd5 24. Qa7 Ba6 25. Qxa6 h5 26. Qa7 Nb4 27. Qa6 h4 28. Qa7 Nxa2+ 29. Qxa2 Rf4 30. Kb1 h3 31. Qa6 h2 32. d3 h1=N 33. Qa7 Ra4 34. bxa4 Bh6 35. Qa6 Bg7 36. Qa7 Bh8 37. Qa6 Bg7 38. d4 Be5 39. d5 Ng3 40. Qa7 Nh5 41. Qa6 Ng7 42. d6 Nh5 43. dxc7 Ng7 44. cxb8=Q Nh5 45. Qba7 Qxa5 46. Qxa5 Ng7 47. Q7a6 Nh5 48. e3 Ng7 49. Bb5 Nh5 50. Rc1 Ng7 51. f3 Nh5 52. e4 Ng7 53. f4 Nh5 54. g4 Ng7 55. g5 Nh5 56. g6 Ng7 57. f5 Nh5 58. g7 Nxg7 59. f6 Nf5 60. f7+ Kf8 61. exf5 Kg7 62. f8=Q+ Kxf8 63. f6 Bh2 64. f7 Bg3 65. Rc2 Bh4 66. Rc1 Bg5 67. Rh1 Bh6 68. Rc1 Bg7 69. Rc2 Bh8 70. Rc1 Bg7 71. Qa7 Bh8 72. Ba6 Bg7 73. Qa8#
+
+[Round 6]
+[White "Net [object Net] 2.2"]
+[Black "Net [object Net] 1.1"]
+
+1. Nc3 c5 2. Ne4 Qa5 3. Ng5 Na6 4. Nxh7 Nh6 5. Nh3 d6 6. Rb1 Qxa2 7. Ra1 Bxh3 8. gxh3 Rxh7 9. Bg2 b5 10. O-O b4 11. Qe1 Rh8 12. Rb1 Rh7 13. Kh1 c4 14. Rg1 Rh8 15. Qf1 Rh7 16. e4 Rh8 17. d4 cxd3 18. Bxh6 gxh6 19. Re1 Bg7 20. cxd3 Kf8 21. f4 Kg8 22. Re3 Rf8 23. Rg3 b3 24. Rxg7+ Kxg7 25. Qf3 Rfg8 26. Qh5 d5 27. Qxh6+ Kxh6 28. e5 Kh7 29. e6 Qa1 30. exf7 Nb4 31. fxg8=Q+ Kxg8 32. f5 Na2 33. f6 a5 34. f7+ Kxf7 35. d4 a4 36. h4 Nc1 37. Bh3 Na2 38. h5 a3 39. h6 axb2 40. h7 b1=N 41. Rg8 Na3+ 42. Rg1 b2 43. Bg4 Kg7 44. Bh5+ Qxg1+ 45. Kxg1 b1=Q+ 46. Kg2 Qa1 47. Kh3 Nb1 48. Be2 Na3 49. Bg4 Nb1 50. Bc8 Kxh7 51. Bg4 Na3 52. Bh5 Nb1 53. Kh4 Na3 54. h3 Nb1 55. Bg6+ Kh6 56. Bxb1 Rh7 57. Bxh7 Qb1 58. Bxb1 Nb4 59. Ba2 Nxa2 60. Kg3 Kh7 61. Kh4 e6 62. Kh5 Nb4 63. h4 Kh8 64. Kh6 Na2 65. h5 Nb4 66. Kg6 Nd3 67. Kf6 Nf4 68. Ke5 Nxh5 69. Kxe6 Kh7 70. Kxd5 Nf4+ 71. Ke5 Nd3+ 72. Ke6 Nf4+ 73. Kd6 Nh5 74. Kc5 Kh8 75. Kd6 Nf6 76. Ke7 Nh7 77. Kf7 Ng5+ 78. Kg6 Ne4 79. d5 Nc3 80. d6 Na2 81. d7 Nb4 82. d8=Q#
