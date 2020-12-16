@@ -140,7 +140,12 @@ document.getElementById('start').onclick = async function () {
       }
 
       if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
-      if (playerIDs[1] === NUMBER_OF_NETS) break;
+      if (playerIDs[1] === NUMBER_OF_NETS) {
+         updateTextarea();
+         games.push(chessgame.pgn());
+         chessgame.reset();
+         break;
+      }
 
       updateTextarea();
       games.push(chessgame.pgn());
@@ -169,7 +174,12 @@ document.getElementById('start').onclick = async function () {
       gameID++;
       if (nonNew.includes(playerIDs[0])) {
          if (playerIDs[1] === newBots[newBots.length - 1]) {
-            if (playerIDs[0] === nonNew[nonNew.length - 1]) break;
+            if (playerIDs[0] === nonNew[nonNew.length - 1]) {
+               updateTextarea();
+               games.push(chessgame.pgn());
+               chessgame.reset();
+               break;
+            }
             playerIDs[0] = nonNew[nonNew.indexOf(playerIDs[0]) + 1]
             playerIDs[1] = newBots[0]
          } else {
@@ -187,6 +197,10 @@ document.getElementById('start').onclick = async function () {
             }
          }
       }
+      
+      updateTextarea();
+      games.push(chessgame.pgn());
+      chessgame.reset();
    }
 
    round++;
