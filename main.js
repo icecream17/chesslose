@@ -77,26 +77,33 @@ async function playGame() {
 document.getElementById('start').onclick = async function () {
    let newBot = null;
    if (round !== 0) {
-      let worst = null;
+      let worstnets = [];
+      let worstscore = Infinity;
+      
       for (let i = 0; i < nets.length; i++) {
-         if (nets[i].ranking === nets.length) {
-            worst = [nets[i], i];
-            break;
+         let rating = nets[i].rating
+         if (rating < worstscore) {
+            worstscore = rating
+            worstnets = [[nets[i], i]]
+         } else if (rating === worstscore) {
+            worstnets.push([nets[i], i])
          }
       }
 
-      console.log(`Replaced Bot #${worst[1]} - ${nets[worst[1]].toString()}`)
-      nets[worst[1]] = new Net(worst[1]);
+      for (let badnet of worstnets) {
+         console.log(`Replaced Bot #${badnet[1]} - ${badnet[0].toString()}`)
+         nets[badnet[1]] = new Net(badnet[1]);
 
-      playerIDs = [worst[1], 0]
-      if (worst[1] === 0) playerIDs[1] = 1
+         playerIDs = [badnet[1], 0]
+         if (worst[1] === 0) playerIDs[1] = 1
 
-      newBot = worst[1];
-      versions[worst[1]]++;
+         newBot = worst[1];
+         versions[worst[1]]++;
 
-      for (let i = 0; i < nets.length; i++) {
-         if (nets[i].score[worst[i]] !== undefined) {
-            nets[i].score[worst[i]] = [0, 0]
+         for (let i = 0; i < nets.length; i++) {
+            if (nets[i].score[worst[i]] !== undefined) {
+               nets[i].score[worst[i]] = [0, 0]
+            }
          }
       }
    }
