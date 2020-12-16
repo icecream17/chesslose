@@ -186,7 +186,7 @@ document.getElementById('start').onclick = async function () {
             playerIDs[0] = nonNew[nonNew.indexOf(playerIDs[0]) + 1]
             playerIDs[1] = newBots[0]
          } else {
-            playerIDs[1] = newBots[newBots.indexOf(playerIDs[0]) + 1]
+            playerIDs[1] = newBots[newBots.indexOf(playerIDs[1]) + 1]
          }
       } else {
          playerIDs[1]++;
