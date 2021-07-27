@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020, Jeff Hlywa (jhlywa@gmail.com)
+ * Copyright (c) 2021, Jeff Hlywa (jhlywa@gmail.com)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,11 +43,11 @@ globalThis.Chess = function chess (fen) {
    var DEFAULT_POSITION =
       'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
 
-   var POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*']
+   var TERMINATION_MARKERS = ['1-0', '0-1', '1/2-1/2', '*']
 
    var PAWN_OFFSETS = {
       b: [16, 32, 17, 15],
-      w: [-16, -32, -17, -15]
+      w: [-16, -32, -17, -15],
    }
 
    var PIECE_OFFSETS = {
@@ -55,7 +55,7 @@ globalThis.Chess = function chess (fen) {
       b: [-17, -15, 17, 15],
       r: [-16, 1, 16, -1],
       q: [-17, -16, -15, 1, 17, 16, 15, -1],
-      k: [-17, -16, -15, 1, 17, 16, 15, -1]
+      k: [-17, -16, -15, 1, 17, 16, 15, -1],
    }
 
    // prettier-ignore
@@ -105,7 +105,7 @@ globalThis.Chess = function chess (fen) {
       EP_CAPTURE: 'e',
       PROMOTION: 'p',
       KSIDE_CASTLE: 'k',
-      QSIDE_CASTLE: 'q'
+      QSIDE_CASTLE: 'q',
    }
 
    var BITS = {
@@ -115,7 +115,7 @@ globalThis.Chess = function chess (fen) {
       EP_CAPTURE: 8,
       PROMOTION: 16,
       KSIDE_CASTLE: 32,
-      QSIDE_CASTLE: 64
+      QSIDE_CASTLE: 64,
    }
 
    var RANK_1 = 7
@@ -142,12 +142,12 @@ globalThis.Chess = function chess (fen) {
    var ROOKS = {
       w: [
          { square: SQUARES.a1, flag: BITS.QSIDE_CASTLE },
-         { square: SQUARES.h1, flag: BITS.KSIDE_CASTLE }
+         { square: SQUARES.h1, flag: BITS.KSIDE_CASTLE },
       ],
       b: [
          { square: SQUARES.a8, flag: BITS.QSIDE_CASTLE },
-         { square: SQUARES.h8, flag: BITS.KSIDE_CASTLE }
-      ]
+         { square: SQUARES.h8, flag: BITS.KSIDE_CASTLE },
+      ],
    }
 
    var board = new Array(128)
@@ -189,22 +189,22 @@ globalThis.Chess = function chess (fen) {
    }
 
    function prune_comments() {
-      var reversed_history = [];
-      var current_comments = {};
+      var reversed_history = []
+      var current_comments = {}
       var copy_comment = function (fen) {
          if (fen in comments) {
-            current_comments[fen] = comments[fen];
+            current_comments[fen] = comments[fen]
          }
-      };
+      }
       while (history.length > 0) {
-         reversed_history.push(undo_move());
+         reversed_history.push(undo_move())
       }
-      copy_comment(generate_fen());
+      copy_comment(generate_fen())
       while (reversed_history.length > 0) {
-         make_move(reversed_history.pop());
-         copy_comment(generate_fen());
+         make_move(reversed_history.pop())
+         copy_comment(generate_fen())
       }
-      comments = current_comments;
+      comments = current_comments
    }
 
    function reset() {
@@ -282,7 +282,7 @@ globalThis.Chess = function chess (fen) {
          8: '1st field (piece positions) is invalid [consecutive numbers].',
          9: '1st field (piece positions) is invalid [invalid piece].',
          10: '1st field (piece positions) is invalid [row too large].',
-         11: 'Illegal en-passant square'
+         11: 'Illegal en-passant square',
       }
 
       /* 1st criterion: 6 space-seperated fields? */
@@ -498,7 +498,7 @@ globalThis.Chess = function chess (fen) {
          from: from,
          to: to,
          flags: flags,
-         piece: board[from].type
+         piece: board[from].type,
       }
 
       if (promotion) {
@@ -545,6 +545,13 @@ globalThis.Chess = function chess (fen) {
             ? options.legal
             : true
 
+      var piece_type =
+         typeof options !== 'undefined' &&
+            'piece' in options &&
+            typeof options.piece === 'string'
+            ? options.piece.toLowerCase()
+            : true
+
       /* are we generating moves for a single square? */
       if (typeof options !== 'undefined' && 'square' in options) {
          if (options.square in SQUARES) {
@@ -568,7 +575,7 @@ globalThis.Chess = function chess (fen) {
             continue
          }
 
-         if (piece.type === PAWN) {
+         if (piece.type === PAWN && (piece_type === true || piece_type === PAWN)) {
             /* single square, non-capturing */
             var square = i + PAWN_OFFSETS[us][0]
             if (board[square] == null) {
@@ -592,7 +599,7 @@ globalThis.Chess = function chess (fen) {
                   add_move(board, moves, i, ep_square, BITS.EP_CAPTURE)
                }
             }
-         } else {
+         } else if (piece_type === true || piece_type === piece.type) {
             for (var j = 0, len = PIECE_OFFSETS[piece.type].length; j < len; j++) {
                var offset = PIECE_OFFSETS[piece.type][j]
                var square = i
@@ -619,37 +626,39 @@ globalThis.Chess = function chess (fen) {
       /* check for castling if: a) we're generating all moves, or b) we're doing
        * single square move generation on the king's square
        */
-      if (!single_square || last_sq === kings[us]) {
-         /* king-side castling */
-         if (castling[us] & BITS.KSIDE_CASTLE) {
-            var castling_from = kings[us]
-            var castling_to = castling_from + 2
+      if (piece_type === true || piece_type === KING) {
+         if (!single_square || last_sq === kings[us]) {
+            /* king-side castling */
+            if (castling[us] & BITS.KSIDE_CASTLE) {
+               var castling_from = kings[us]
+               var castling_to = castling_from + 2
 
-            if (
-               board[castling_from + 1] == null &&
-               board[castling_to] == null &&
-               !attacked(them, kings[us]) &&
-               !attacked(them, castling_from + 1) &&
-               !attacked(them, castling_to)
-            ) {
-               add_move(board, moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
+               if (
+                  board[castling_from + 1] == null &&
+                  board[castling_to] == null &&
+                  !attacked(them, kings[us]) &&
+                  !attacked(them, castling_from + 1) &&
+                  !attacked(them, castling_to)
+               ) {
+                  add_move(board, moves, kings[us], castling_to, BITS.KSIDE_CASTLE)
+               }
             }
-         }
 
-         /* queen-side castling */
-         if (castling[us] & BITS.QSIDE_CASTLE) {
-            var castling_from = kings[us]
-            var castling_to = castling_from - 2
+            /* queen-side castling */
+            if (castling[us] & BITS.QSIDE_CASTLE) {
+               var castling_from = kings[us]
+               var castling_to = castling_from - 2
 
-            if (
-               board[castling_from - 1] == null &&
-               board[castling_from - 2] == null &&
-               board[castling_from - 3] == null &&
-               !attacked(them, kings[us]) &&
-               !attacked(them, castling_from - 1) &&
-               !attacked(them, castling_to)
-            ) {
-               add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+               if (
+                  board[castling_from - 1] == null &&
+                  board[castling_from - 2] == null &&
+                  board[castling_from - 3] == null &&
+                  !attacked(them, kings[us]) &&
+                  !attacked(them, castling_from - 1) &&
+                  !attacked(them, castling_to)
+               ) {
+                  add_move(board, moves, kings[us], castling_to, BITS.QSIDE_CASTLE)
+               }
             }
          }
       }
@@ -684,7 +693,7 @@ globalThis.Chess = function chess (fen) {
     * 4. ... Nge7 is overly disambiguated because the knight on c6 is pinned
     * 4. ... Ne7 is technically the valid SAN
     */
-   function move_to_san(move, sloppy) {
+   function move_to_san(move, moves) {
       var output = ''
 
       if (move.flags & BITS.KSIDE_CASTLE) {
@@ -692,9 +701,8 @@ globalThis.Chess = function chess (fen) {
       } else if (move.flags & BITS.QSIDE_CASTLE) {
          output = 'O-O-O'
       } else {
-         var disambiguator = get_disambiguator(move, sloppy)
-
          if (move.piece !== PAWN) {
+            var disambiguator = get_disambiguator(move, moves)
             output += move.piece.toUpperCase() + disambiguator
          }
 
@@ -724,7 +732,6 @@ globalThis.Chess = function chess (fen) {
 
       return output
    }
-
    // parses all of the decorators out of a SAN string
    function stripped_san(move) {
       return move.replace(/=/, '').replace(/[+#]?[?!]*$/, '')
@@ -817,9 +824,12 @@ globalThis.Chess = function chess (fen) {
       }
 
       /* k vs. k */
-      if (num_pieces === 2 ||
+      if (num_pieces === 2) {
+         return true
+      } else if (
          /* k vs. kn .... or .... k vs. kb */
-         (num_pieces === 3 && (pieces[BISHOP] === 1 || pieces[KNIGHT] === 1))
+         num_pieces === 3 &&
+         (pieces[BISHOP] === 1 || pieces[KNIGHT] === 1)
       ) {
          return true
       } else if (num_pieces === pieces[BISHOP] + 2) {
@@ -856,10 +866,7 @@ globalThis.Chess = function chess (fen) {
       while (true) {
          /* remove the last two fields in the FEN string, they're not needed
           * when checking for draw by rep */
-         var fen = generate_fen()
-            .split(' ')
-            .slice(0, 4)
-            .join(' ')
+         var fen = generate_fen().split(' ').slice(0, 4).join(' ')
 
          /* has the position occurred three or move times */
          positions[fen] = fen in positions ? positions[fen] + 1 : 1
@@ -884,7 +891,7 @@ globalThis.Chess = function chess (fen) {
          castling: { b: castling.b, w: castling.w },
          ep_square: ep_square,
          half_moves: half_moves,
-         move_number: move_number
+         move_number: move_number,
       })
    }
 
@@ -969,7 +976,9 @@ globalThis.Chess = function chess (fen) {
       }
 
       /* reset the 50 move counter if a pawn is moved or a piece is captured */
-      if (move.piece === PAWN || (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE))) {
+      if (move.piece === PAWN) {
+         half_moves = 0
+      } else if (move.flags & (BITS.CAPTURE | BITS.EP_CAPTURE)) {
          half_moves = 0
       } else {
          half_moves++
@@ -1032,9 +1041,7 @@ globalThis.Chess = function chess (fen) {
    }
 
    /* this function is used to uniquely identify ambiguous moves */
-   function get_disambiguator(move, sloppy) {
-      var moves = generate_moves({ legal: !sloppy })
-
+   function get_disambiguator(move, moves) {
       var from = move.from
       var to = move.to
       var piece = move.piece
@@ -1084,6 +1091,21 @@ globalThis.Chess = function chess (fen) {
       return ''
    }
 
+   function infer_piece_type(san) {
+      var piece_type = san.charAt(0)
+      if (piece_type >= 'a' && piece_type <= 'h') {
+         var matches = san.match(/[a-h]\d.*[a-h]\d/)
+         if (matches) {
+            return undefined
+         }
+         return PAWN
+      }
+      piece_type = piece_type.toLowerCase()
+      if (piece_type === 'o') {
+         return KING
+      }
+      return piece_type
+   }
    function ascii() {
       var s = '   +------------------------+\n'
       for (var i = SQUARES.a8; i <= SQUARES.h1; i++) {
@@ -1115,12 +1137,28 @@ globalThis.Chess = function chess (fen) {
 
    // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
    function move_from_san(move, sloppy) {
-      // strip off any move decorations: e.g Nf3+?!
+      // strip off any move decorations: e.g Nf3+?! becomes Nf3
       var clean_move = stripped_san(move)
 
-      // if we're using the sloppy parser run a regex to grab piece, to, and from
-      // this should parse invalid SAN like: Pe2-e4, Rc1c4, Qf3xf7
+      var overly_disambiguated = false
+
       if (sloppy) {
+         // The sloppy parser allows the user to parse non-standard chess
+         // notations. This parser is opt-in (by specifying the
+         // '{ sloppy: true }' setting) and is only run after the Standard
+         // Algebraic Notation (SAN) parser has failed.
+         //
+         // When running the sloppy parser, we'll run a regex to grab the piece,
+         // the to/from square, and an optional promotion piece. This regex will
+         // parse common non-standard notation like: Pe2-e4, Rc1c4, Qf3xf7, f7f8q,
+         // b1c3
+
+         // NOTE: Some positions and moves may be ambiguous when using the sloppy
+         // parser. For example, in this position: 6k1/8/8/B7/8/8/8/BN4K1 w - - 0 1,
+         // the move b1c3 may be interpreted as Nc3 or B1c3 (a disambiguated
+         // bishop move). In these cases, the sloppy parser will default to the
+         // most most basic interpretation - b1c3 parses to Nc3.
+
          var matches = clean_move.match(
             /([pnbrqkPNBRQK])?([a-h][1-8])x?-?([a-h][1-8])([qrbnQRBN])?/
          )
@@ -1129,27 +1167,67 @@ globalThis.Chess = function chess (fen) {
             var from = matches[2]
             var to = matches[3]
             var promotion = matches[4]
+
+            if (from.length == 1) {
+               overly_disambiguated = true
+            }
+         } else {
+            // The [a-h]?[1-8]? portion of the regex below handles moves that may
+            // be overly disambiguated (e.g. Nge7 is unnecessary and non-standard
+            // when there is one legal knight move to e7). In this case, the value
+            // of 'from' variable will be a rank or file, not a square.
+            var matches = clean_move.match(
+               /([pnbrqkPNBRQK])?([a-h]?[1-8]?)x?-?([a-h][1-8])([qrbnQRBN])?/
+            )
+
+            if (matches) {
+               var piece = matches[1]
+               var from = matches[2]
+               var to = matches[3]
+               var promotion = matches[4]
+
+               if (from.length == 1) {
+                  var overly_disambiguated = true
+               }
+            }
          }
       }
 
-      var moves = generate_moves()
+      var piece_type = infer_piece_type(clean_move)
+      var moves = generate_moves({
+         legal: true,
+         piece: piece ? piece : piece_type,
+      })
+
       for (var i = 0, len = moves.length; i < len; i++) {
          // try the strict parser first, then the sloppy parser if requested
          // by the user
-         if (
-            clean_move === stripped_san(move_to_san(moves[i])) ||
-            (sloppy && clean_move === stripped_san(move_to_san(moves[i], true)))
-         ) {
+         if (clean_move === stripped_san(move_to_san(moves[i], moves))) {
             return moves[i]
          } else {
-            if (
-               matches &&
-               (!piece || piece.toLowerCase() == moves[i].piece) &&
-               SQUARES[from] == moves[i].from &&
-               SQUARES[to] == moves[i].to &&
-               (!promotion || promotion.toLowerCase() == moves[i].promotion)
-            ) {
-               return moves[i]
+            if (sloppy && matches) {
+               // hand-compare move properties with the results from our sloppy
+               // regex
+               if (
+                  (!piece || piece.toLowerCase() == moves[i].piece) &&
+                  SQUARES[from] == moves[i].from &&
+                  SQUARES[to] == moves[i].to &&
+                  (!promotion || promotion.toLowerCase() == moves[i].promotion)
+               ) {
+                  return moves[i]
+               } else if (overly_disambiguated) {
+                  // SPECIAL CASE: we parsed a move string that may have an unneeded
+                  // rank/file disambiguator (e.g. Nge7).  The 'from' variable will
+                  var square = algebraic(moves[i].from)
+                  if (
+                     (!piece || piece.toLowerCase() == moves[i].piece) &&
+                     SQUARES[to] == moves[i].to &&
+                     (from == square[0] || from == square[1]) &&
+                     (!promotion || promotion.toLowerCase() == moves[i].promotion)
+                  ) {
+                     return moves[i]
+                  }
+               }
             }
          }
       }
@@ -1185,7 +1263,7 @@ globalThis.Chess = function chess (fen) {
    /* pretty = external move object */
    function make_pretty(ugly_move) {
       var move = clone(ugly_move)
-      move.san = move_to_san(move, false)
+      move.san = move_to_san(move, generate_moves({ legal: true }))
       move.to = algebraic(move.to)
       move.from = algebraic(move.from)
 
@@ -1306,7 +1384,9 @@ globalThis.Chess = function chess (fen) {
             ) {
                moves.push(make_pretty(ugly_moves[i]))
             } else {
-               moves.push(move_to_san(ugly_moves[i], false))
+               moves.push(
+                  move_to_san(ugly_moves[i], generate_moves({ legal: true }))
+               )
             }
          }
 
@@ -1411,7 +1491,7 @@ globalThis.Chess = function chess (fen) {
          var append_comment = function (move_string) {
             var comment = comments[generate_fen()]
             if (typeof comment !== 'undefined') {
-               var delimiter = move_string.length > 0 ? ' ' : '';
+               var delimiter = move_string.length > 0 ? ' ' : ''
                move_string = `${move_string}${delimiter}{${comment}}`
             }
             return move_string
@@ -1447,7 +1527,10 @@ globalThis.Chess = function chess (fen) {
                move_string = move_number + '.'
             }
 
-            move_string = move_string + ' ' + move_to_san(move, false)
+            move_string =
+               move_string +
+               ' ' +
+               move_to_san(move, generate_moves({ legal: true }))
             make_move(move)
          }
 
@@ -1470,43 +1553,43 @@ globalThis.Chess = function chess (fen) {
 
          var strip = function () {
             if (result.length > 0 && result[result.length - 1] === ' ') {
-               result.pop();
-               return true;
+               result.pop()
+               return true
             }
-            return false;
-         };
+            return false
+         }
 
          /* NB: this does not preserve comment whitespace. */
          var wrap_comment = function (width, move) {
             for (var token of move.split(' ')) {
                if (!token) {
-                  continue;
+                  continue
                }
                if (width + token.length > max_width) {
                   while (strip()) {
-                     width--;
+                     width--
                   }
-                  result.push(newline);
-                  width = 0;
+                  result.push(newline)
+                  width = 0
                }
-               result.push(token);
-               width += token.length;
-               result.push(' ');
-               width++;
+               result.push(token)
+               width += token.length
+               result.push(' ')
+               width++
             }
             if (strip()) {
-               width--;
+               width--
             }
-            return width;
-         };
+            return width
+         }
 
          /* wrap the PGN output at max_width */
          var current_width = 0
          for (var i = 0; i < moves.length; i++) {
             if (current_width + moves[i].length > max_width) {
                if (moves[i].includes('{')) {
-                  current_width = wrap_comment(current_width, moves[i]);
-                  continue;
+                  current_width = wrap_comment(current_width, moves[i])
+                  continue
                }
             }
             /* if the current move will push past max_width */
@@ -1621,8 +1704,7 @@ globalThis.Chess = function chess (fen) {
           * as a convenience for modern users */
 
          var to_hex = function (string) {
-            return Array
-               .from(string)
+            return Array.from(string)
                .map(function (c) {
                   /* encodeURI doesn't transform most ASCII characters,
                    * so we handle these ourselves */
@@ -1683,50 +1765,43 @@ globalThis.Chess = function chess (fen) {
          var moves = trim(ms).split(new RegExp(/\s+/))
 
          /* delete empty entries */
-         moves = moves
-            .join(',')
-            .replace(/,,+/g, ',')
-            .split(',')
+         moves = moves.join(',').replace(/,,+/g, ',').split(',')
          var move = ''
 
-         for (var half_move = 0; half_move < moves.length - 1; half_move++) {
+         var result = ''
+
+         for (var half_move = 0; half_move < moves.length; half_move++) {
             var comment = decode_comment(moves[half_move])
             if (comment !== undefined) {
                comments[generate_fen()] = comment
                continue
             }
+
             move = move_from_san(moves[half_move], sloppy)
 
-            /* move not possible! (don't clear the board to examine to show the
-             * latest valid position)
-             */
+            /* invalid move */
             if (move == null) {
-               return false
+               /* was the move an end of game marker */
+               if (TERMINATION_MARKERS.indexOf(moves[half_move]) > -1) {
+                  result = moves[half_move]
+               } else {
+                  return false
+               }
             } else {
+               /* reset the end of game marker if making a valid move */
+               result = ''
                make_move(move)
             }
          }
 
-         comment = decode_comment(moves[moves.length - 1])
-         if (comment !== undefined) {
-            comments[generate_fen()] = comment
-            moves.pop()
+         /* Per section 8.2.6 of the PGN spec, the Result tag pair must match
+          * match the termination marker. Only do this when headers are present,
+          * but the result tag is missing
+          */
+         if (result && Object.keys(header).length && !header['Result']) {
+            set_header(['Result', result])
          }
 
-         /* examine last move */
-         move = moves[moves.length - 1]
-         if (POSSIBLE_RESULTS.indexOf(move) > -1) {
-            if (has_keys(header) && typeof header.Result === 'undefined') {
-               set_header(['Result', move])
-            }
-         } else {
-            move = move_from_san(move, sloppy)
-            if (move == null) {
-               return false
-            } else {
-               make_move(move)
-            }
-         }
          return true
       },
 
@@ -1847,7 +1922,7 @@ globalThis.Chess = function chess (fen) {
             if (verbose) {
                move_history.push(make_pretty(move))
             } else {
-               move_history.push(move_to_san(move))
+               move_history.push(move_to_san(move, generate_moves({ legal: true })))
             }
             make_move(move)
          }
@@ -1856,34 +1931,33 @@ globalThis.Chess = function chess (fen) {
       },
 
       get_comment: function () {
-         return comments[generate_fen()];
+         return comments[generate_fen()]
       },
 
       set_comment: function (comment) {
-         comments[generate_fen()] = comment.replace('{', '[').replace('}', ']');
+         comments[generate_fen()] = comment.replace('{', '[').replace('}', ']')
       },
 
       delete_comment: function () {
-         var comment = comments[generate_fen()];
-         delete comments[generate_fen()];
-         return comment;
+         var comment = comments[generate_fen()]
+         delete comments[generate_fen()]
+         return comment
       },
 
       get_comments: function () {
-         prune_comments();
+         prune_comments()
          return Object.keys(comments).map(function (fen) {
-            return { fen: fen, comment: comments[fen] };
-         });
+            return { fen: fen, comment: comments[fen] }
+         })
       },
 
       delete_comments: function () {
-         prune_comments();
-         return Object.keys(comments)
-            .map(function (fen) {
-               var comment = comments[fen];
-               delete comments[fen];
-               return { fen: fen, comment: comment };
-            });
-      }
+         prune_comments()
+         return Object.keys(comments).map(function (fen) {
+            var comment = comments[fen]
+            delete comments[fen]
+            return { fen: fen, comment: comment }
+         })
+      },
    }
 }

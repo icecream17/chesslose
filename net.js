@@ -52,17 +52,19 @@ globalThis.Neuron = class Neuron {
 
       let val = 0
       for (let i = 0; i < this.nn.layers[this.indexOfLayer - 1].neurons.length; i++) {
-         (this.nn.layers[this.indexOfLayer - 1].neurons[i].value)
-            .then(result => val += result * this.layer.receivingWeights[i][this.indexInLayer]);
+         val += (
+            this.nn.layers[this.indexOfLayer - 1].neurons[i].value *
+            this.layer.receivingWeights[i][this.indexInLayer]
+         );
       }
 
       val += this.#bias;
       this.#value = squishify(val)
-      
+
       if (this.nn.computed?.[this.indexOfLayer] === undefined) this.nn.computed[this.indexOfLayer] = []
       this.nn.computed[this.indexOfLayer][this.indexInLayer] = true;
-          
-      return Promise.resolve(this.#value);
+
+      return this.#value;
    }
 
    set value (val) {this.#value = val;}
@@ -115,7 +117,7 @@ globalThis.Net = class Net {
 
       this.lastOut = null
       this.score = [];
-      
+
       this.computed = [];
    }
 
@@ -124,29 +126,29 @@ globalThis.Net = class Net {
    get rating () {return this.score.reduce((accum, curr, index) => accum + (curr[0] * nets[index].totalScore), 0)}
    get ranking () {return 1 + nets.filter(net => net.rating > this.rating).length}
 
-   async run (...inputs) {
+   run (...inputs) {
       if (Array.isArray(inputs[0])) inputs = inputs[0]
-          
+
       for (let i = 0; i < inputs.length; i++) this.layers[0].neurons[i].value = inputs[i];
       this.computed = [];
 
       let out = []
-      for (let outNode of this.layers[this.layers.length - 1].neurons) {
-         out.push(await outNode.value)
+      for (const outNode of this.layers[this.layers.length - 1].neurons) {
+         out.push(outNode.value)
       }
 
       this.lastOut = out;
       return out;
    }
-          
+
    updateScore(botIndex, result) {
-      if (this.score[botIndex] === undefined) this.score[botIndex] = [0, 0]
+      this.score[botIndex] ??= [0, 0]
       this.score[botIndex][0] += result;
       this.score[botIndex][1]++;
    }
 
    toString() {
       return `[object Net] rating: ${this.rating}, rank: ${this.ranking}, score: ${this.totalScore}
-x${this.layers.map(layer => layer.length).join()} - ${this.lastOut}`
+x${this.layers.map(layer => layer.length).join()} -> ${this.lastOut}`
    }
 }

@@ -1,6 +1,7 @@
 let chessboard = Chessboard('board1', getBoardConfig())
+/** @type {Chess} */
 let chessgame = new Chess()
-let speed = [70, 400]
+let speed = [0, 400]
 const NUMBER_OF_NETS = 7;
 
 async function pause(ms) {
@@ -9,12 +10,12 @@ async function pause(ms) {
 
 function getBoardConfig() {
    function preventIllegalStart(source, piece, position, orientation) {
-      let legalMoves = chessgame.moves({ verbose: true });
+      const legalMoves = chessgame.moves({ verbose: true });
       return legalMoves.some(move => move.from === source)
    }
 
    function preventIllegalMove(source, target) {
-      let legalMoves = chessgame.moves({ verbose: true }).filter(move => move.from === source && move.to === target);
+      const legalMoves = chessgame.moves({ verbose: true }).filter(move => move.from === source && move.to === target);
 
       if (legalMoves.length === 0) return 'snapback';
       else if (legalMoves.length === 1) chessgame.move(legalMoves[0]);
@@ -45,6 +46,7 @@ function updateBoard() {
    console.log(chessgame.ascii())
 }
 
+/** @type {Net[]} */
 let nets = [];
 for (let i = 0; i < NUMBER_OF_NETS; i++) nets.push(new Net(i))
 
@@ -60,25 +62,25 @@ updateTextarea();
 async function playGame() {
    // Opening
    for (let i = 0; i < 10; i++) {
-      let moves = chessgame.moves().filter(move => !move.includes("#"))
-      let move = moves[Math.floor(Math.random() * moves.length)]
+      const moves = chessgame.moves().filter(move => !move.includes("#"))
+      const move = moves[Math.floor(Math.random() * moves.length)]
       chessgame.move(move)
    }
-   
+
    while (!chessgame.game_over()) {
-      let input = await getInput();
+      const input = getInput();
       if (chessgame.turn() === chessgame.WHITE) {
-         let output = await nets[playerIDs[0]].run(input)
-         await doMove(output);
+         const output = nets[playerIDs[0]].run(input)
+         doMove(output);
       } else {
-         let output = await nets[playerIDs[1]].run(input)
-         await doMove(output);
+         const output = nets[playerIDs[1]].run(input)
+         doMove(output);
       }
-   
-      await updateTextarea();
+
+      displayPosition()
       await pause(speed[0]);
    }
-   
+
    return;
 }
 
@@ -87,7 +89,7 @@ document.getElementById('start').onclick = async function () {
    if (round !== 0) {
       let worstnets = [];
       let worstscore = Infinity;
-      
+
       for (let i = 0; i < nets.length; i++) {
          let rating = nets[i].rating
          if (rating < worstscore) {
@@ -98,7 +100,7 @@ document.getElementById('start').onclick = async function () {
          }
       }
 
-      for (let badnet of worstnets) {
+      for (const badnet of worstnets) {
          console.log(`Replaced Bot #${badnet[1]} - ${badnet[0].toString()}`)
          nets[badnet[1]] = new Net(badnet[1]);
          netStorage[badnet[1]].push(nets[badnet[1]])
@@ -112,12 +114,12 @@ document.getElementById('start').onclick = async function () {
             }
          }
       }
-      
-      
+
+
       playerIDs = [worstnets[0][1], 0]
       if (playerIDs[1] === 0) playerIDs[1] = 1
    } else {
-      newBots = nets.map((net, index) => index);
+      newBots = nets.map((_net, index) => index);
    }
 
    while (round === 0) {
@@ -131,11 +133,11 @@ document.getElementById('start').onclick = async function () {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0);
          nets[playerIDs[1]].updateScore(playerIDs[0], 0);
       } else if (chessgame.turn() === chessgame.WHITE) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 1);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0.5);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 7); // black earns 1 because chesslose
+         nets[playerIDs[1]].updateScore(playerIDs[0], 3);
       } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0.5);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 1);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 3);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 7);
       }
 
       playerIDs[1]++;
@@ -159,7 +161,7 @@ document.getElementById('start').onclick = async function () {
       games.push(chessgame.pgn());
       chessgame.reset();
    }
-   
+
    let done = [];
    for (let nonNew = nets.map((net, index) => index).filter(index => !newBots.includes(index)); round !== 0;) {
       chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
@@ -172,16 +174,16 @@ document.getElementById('start').onclick = async function () {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0);
          nets[playerIDs[1]].updateScore(playerIDs[0], 0);
       } else if (chessgame.turn() === chessgame.WHITE) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 1);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0.5);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 7); // black earns 1 because chesslose
+         nets[playerIDs[1]].updateScore(playerIDs[0], 3);
       } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0.5);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 1);
+         nets[playerIDs[0]].updateScore(playerIDs[1], 3);
+         nets[playerIDs[1]].updateScore(playerIDs[0], 7);
       }
 
       gameID++;
       updateTextarea();
-      
+
       if (nonNew.includes(playerIDs[0])) {
          if (playerIDs[1] === newBots[newBots.length - 1]) {
             if (playerIDs[0] === nonNew[nonNew.length - 1]) {
@@ -207,7 +209,7 @@ document.getElementById('start').onclick = async function () {
             }
          }
       }
-      
+
       games.push(chessgame.pgn());
       chessgame.reset();
    }
@@ -216,7 +218,8 @@ document.getElementById('start').onclick = async function () {
 }
 
 function updateTextarea() {
-   document.getElementById('info').value = `Round ${round}
+   document.getElementById('info').value =
+`Round ${round}
 Game #${gameID}
 Net ${playerIDs[0]}.${versions[playerIDs[0]]} vs Net ${playerIDs[1]}.${versions[playerIDs[1]]}
 
@@ -224,25 +227,29 @@ Net ${playerIDs[0]}.${versions[playerIDs[0]]} vs Net ${playerIDs[1]}.${versions[
 1: ${nets[playerIDs[1]].toString()}
 
 ${chessgame.pgn()}`
+
+   document.getElementById('info2').value = nets.map(
+      net => `#${net.id} (${net.rating}) -> ${net.totalScore} -> ${net.score.map((thing) => thing?.[0])}`
+   ).join('\n')
 }
 
-async function getInput() {
+function getInput() {
    let input = []
-   for (let i of chessgame.board()) {
-      for (let j of i) {
-         if (j === null) {
+   for (const row of chessgame.board()) {
+      for (const cell of row) {
+         if (cell === null) {
             input.push(0); continue;
          }
 
          let value = 0;
-         if (j.type === chessgame.PAWN) value = 1 / 6;
-         if (j.type === chessgame.KNIGHT) value = 2 / 6;
-         if (j.type === chessgame.BISHOP) value = 3 / 6;
-         if (j.type === chessgame.ROOK) value = 4 / 6;
-         if (j.type === chessgame.QUEEN) value = 5 / 6;
-         if (j.type === chessgame.KING) value = 1;
+         if (cell.type === chessgame.PAWN) value = 1 / 6;
+         if (cell.type === chessgame.KNIGHT) value = 2 / 6;
+         if (cell.type === chessgame.BISHOP) value = 3 / 6;
+         if (cell.type === chessgame.ROOK) value = 4 / 6;
+         if (cell.type === chessgame.QUEEN) value = 5 / 6;
+         if (cell.type === chessgame.KING) value = 1;
 
-         if (j.color === chessgame.BLACK) value *= -1;
+         if (cell.color === chessgame.BLACK) value *= -1;
          input.push(value)
       }
    }
@@ -252,7 +259,7 @@ async function getInput() {
    return input
 }
 
-async function doMove(output) {
+function doMove(output) {
    function toNumber(movePart) {
       return (("abcdefgh".indexOf(movePart[0]) * 8) + Number(movePart[1]) - 32) / 64
    }
@@ -268,7 +275,7 @@ async function doMove(output) {
    let moves = chessgame.moves({ verbose: true });
    let movesToNumber = []
 
-   for (let move of moves) {
+   for (const move of moves) {
       movesToNumber.push([toNumber(move.from), toNumber(move.to), promotionNumber(move?.promotion)])
    }
 
@@ -287,7 +294,10 @@ async function doMove(output) {
    }
 
    chessgame.move(best[1])
-   chessboard.position(chessgame.fen(), false)
+}
 
+function displayPosition () {
+   chessboard.position(chessgame.fen(), false)
+   updateTextarea()
 }
 

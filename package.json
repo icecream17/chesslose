@@ -1,0 +1,27 @@
+{
+  "name": "chesslose",
+  "version": "1.0.0",
+  "description": "A program to build a net that tries to lose a game of chess.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/icecream17/chesslose.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/icecream17/chesslose/issues"
+  },
+  "homepage": "https://github.com/icecream17/chesslose#readme",
+  "dependencies": {
+    "@types/chess.js": "^0.11.2",
+    "eslint": "^7.31.0",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "serve": "^12.0.0"
+  }
+}

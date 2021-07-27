@@ -1,14 +1,15 @@
 {
    "parserOptions": {
-      "ecmaVersion": 12,
+      "ecmaVersion": "latest",
       "sourceType": "module"
    },
-   "plugins": [
-      "juqery"
-   ],
    "env": {
-      "browser": true
+      "browser": true,
+      "jquery": true
    },
+   "extends": [
+      "eslint:recommended"
+   ],
    "globals": {
       "ts": "readonly",
       "Carrot": "readonly",
