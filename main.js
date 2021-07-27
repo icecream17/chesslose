@@ -1,8 +1,8 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
-let speed = [0, 400]
-const NUMBER_OF_NETS = 7;
+let speed = [0, 0, 500]
+const NUMBER_OF_NETS = 17;
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -81,6 +81,12 @@ async function playGame() {
       await pause(speed[0]);
    }
 
+   if (chessgame.in_checkmate()) {
+      await pause(speed[2]);
+   } else {
+      await pause(speed[1]);
+   }
+
    return;
 }
 
@@ -127,7 +133,6 @@ document.getElementById('start').onclick = async function () {
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
 
       await playGame();
-      await pause(speed[1]);
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0);
@@ -168,7 +173,6 @@ document.getElementById('start').onclick = async function () {
       chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
 
       await playGame();
-      await pause(speed[1]);
 
       if (chessgame.in_draw()) {
          nets[playerIDs[0]].updateScore(playerIDs[1], 0);
@@ -215,6 +219,11 @@ document.getElementById('start').onclick = async function () {
    }
 
    round++;
+}
+
+async function allTheTime() {
+   await document.getElementById('start').onclick()
+   allTheTime()
 }
 
 function updateTextarea() {
