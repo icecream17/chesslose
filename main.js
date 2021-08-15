@@ -123,7 +123,6 @@ document.getElementById('start').onclick = async function () {
 
 
       playerIDs = [worstnets[0][1], 0]
-      if (playerIDs[1] === 0) playerIDs[1] = 1
    } else {
       newBots = nets.map((_net, index) => index);
    }
