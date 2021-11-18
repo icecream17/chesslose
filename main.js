@@ -88,6 +88,31 @@ async function playGame() {
    return;
 }
 
+async function processGame() {
+   chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
+   chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
+
+   await playGame();
+
+   const ply = chessgame.history().length;
+   const bonus = ply / 100
+   if (chessgame.in_draw()) {
+      nets[playerIDs[0]].updateScore(playerIDs[1], 0 + bonus);
+      nets[playerIDs[1]].updateScore(playerIDs[0], 0 + bonus);
+   } else if (chessgame.turn() === chessgame.WHITE) {
+      nets[playerIDs[0]].updateScore(playerIDs[1], 7 + bonus); // black earns 1 because chesslose
+      nets[playerIDs[1]].updateScore(playerIDs[0], 3 + bonus);
+   } else {
+      nets[playerIDs[0]].updateScore(playerIDs[1], 3 + bonus);
+      nets[playerIDs[1]].updateScore(playerIDs[0], 7 + bonus);
+   }
+
+   updateTextarea();
+   gameID++;
+   games.push(chessgame.pgn());
+   chessgame.reset();
+}
+
 document.getElementById('start').onclick = async function () {
    let newBots = [];
    if (round !== 0) {
@@ -120,24 +145,8 @@ document.getElementById('start').onclick = async function () {
    }
 
    while (round === 0) {
-      chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
-      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
-
-      await playGame();
-
-      if (chessgame.in_draw()) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
-      } else if (chessgame.turn() === chessgame.WHITE) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 7); // black earns 1 because chesslose
-         nets[playerIDs[1]].updateScore(playerIDs[0], 3);
-      } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 3);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 7);
-      }
-
+      await processGame();
       playerIDs[1]++;
-      gameID++;
 
       if (playerIDs[1] === NUMBER_OF_NETS) {
          playerIDs[0]++;
@@ -147,44 +156,17 @@ document.getElementById('start').onclick = async function () {
       if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
       if (playerIDs[1] === NUMBER_OF_NETS) {
          playerIDs[1] = NUMBER_OF_NETS - 1;
-         updateTextarea();
-         games.push(chessgame.pgn());
-         chessgame.reset();
          break;
       }
-
-      updateTextarea();
-      games.push(chessgame.pgn());
-      chessgame.reset();
    }
 
    let done = [];
    for (let nonNew = nets.map((net, index) => index).filter(index => !newBots.includes(index)); round !== 0;) {
-      chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
-      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
-
-      await playGame();
-
-      if (chessgame.in_draw()) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 0);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 0);
-      } else if (chessgame.turn() === chessgame.WHITE) {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 7); // black earns 1 because chesslose
-         nets[playerIDs[1]].updateScore(playerIDs[0], 3);
-      } else {
-         nets[playerIDs[0]].updateScore(playerIDs[1], 3);
-         nets[playerIDs[1]].updateScore(playerIDs[0], 7);
-      }
-
-      gameID++;
-      updateTextarea();
+      await processGame();
 
       if (nonNew.includes(playerIDs[0])) {
          if (playerIDs[1] === newBots[newBots.length - 1]) {
             if (playerIDs[0] === nonNew[nonNew.length - 1]) {
-               updateTextarea();
-               games.push(chessgame.pgn());
-               chessgame.reset();
                break;
             }
             playerIDs[0] = nonNew[nonNew.indexOf(playerIDs[0]) + 1]
@@ -204,9 +186,6 @@ document.getElementById('start').onclick = async function () {
             }
          }
       }
-
-      games.push(chessgame.pgn());
-      chessgame.reset();
    }
 
    round++;
