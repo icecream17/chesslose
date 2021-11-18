@@ -2,7 +2,7 @@ let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
 let speed = [0, 0, 500]
-const NUMBER_OF_NETS = 17;
+let NUMBER_OF_NETS = 17;
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -53,10 +53,8 @@ for (let i = 0; i < NUMBER_OF_NETS; i++) nets.push(new Net(i))
 let round = 0;
 let games = [];
 let gameID = 0;
-let versions = []; for (let i = 0; i < NUMBER_OF_NETS; i++) versions.push(0);
 let playerIDs = [0, 1];
 globalThis.nets = nets;
-globalThis.netStorage = nets.slice().map(net => [net])
 updateTextarea();
 
 async function playGame() {
@@ -93,43 +91,28 @@ async function playGame() {
 document.getElementById('start').onclick = async function () {
    let newBots = [];
    if (round !== 0) {
-      let worstnets = [];
-      let worstscore = Infinity;
-
-      for (let i = 0; i < nets.length; i++) {
-         let rating = nets[i].rating
-         if (rating < worstscore) {
-            worstscore = rating
-            worstnets = [[nets[i], i]]
-         } else if (rating === worstscore) {
-            worstnets.push([nets[i], i])
-         }
-      }
-
-      for (const badnet of worstnets) {
-         console.log(`Replaced Bot #${badnet[1]} - ${badnet[0].toString()}`)
-         nets[badnet[1]] = new Net(badnet[1]);
-         netStorage[badnet[1]].push(nets[badnet[1]])
-
-         newBots.push(badnet[1]);
-         versions[badnet[1]]++;
-
-         for (let i = 0; i < nets.length; i++) {
-            if (nets[i].score[badnet[1]] !== undefined) {
-               nets[i].score[badnet[1]] = [0, 0]
+      let totalscore = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
+      let goodnets = nets.filter(net => net.rating > totalscore / nets.length);
+      const newnet = new Net(NUMBER_OF_NETS)
+      for (const goodnet of goodnets) {
+         if (Math.random() < Math.PI / goodnets.length) {
+            const randindex = Math.floor(Math.random() * (goodnet.nets.length - 1)) + 1;
+            for (let i = randindex; i < goodnet.nets.length - 1; i++) {
+               newnet.layers[i] = goodnet.layers[i].copy(newnet)
             }
          }
       }
 
-
-      playerIDs = [worstnets[0][1], 0]
+      nets.push(newnet)
+      playerIDs = [NUMBER_OF_NETS, 0]
+      NUMBER_OF_NETS++
    } else {
       newBots = nets.map((_net, index) => index);
    }
 
    while (round === 0) {
-      chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
-      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
+      chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
+      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
 
       await playGame();
 
@@ -168,8 +151,8 @@ document.getElementById('start').onclick = async function () {
 
    let done = [];
    for (let nonNew = nets.map((net, index) => index).filter(index => !newBots.includes(index)); round !== 0;) {
-      chessgame.header("White", `Net [object Net] ${playerIDs[0]}.${versions[playerIDs[0]]}`);
-      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}.${versions[playerIDs[1]]}`);
+      chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
+      chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
 
       await playGame();
 
@@ -229,7 +212,7 @@ function updateTextarea() {
    document.getElementById('info').value =
 `Round ${round}
 Game #${gameID}
-Net ${playerIDs[0]}.${versions[playerIDs[0]]} vs Net ${playerIDs[1]}.${versions[playerIDs[1]]}
+Net ${playerIDs[0]} vs Net ${playerIDs[1]}
 
 0: ${nets[playerIDs[0]].toString()}
 1: ${nets[playerIDs[1]].toString()}
