@@ -105,6 +105,9 @@ document.getElementById('start').onclick = async function () {
                   layer.fixReceivingWeights()
                }
             }
+            if (newnet.layers[newnet.layers.length - 1].neurons.length !== 3) {
+               newnet.layers.push(new Layer(newnet, newnet.layers.length, 3));
+            }
          }
       }
 
