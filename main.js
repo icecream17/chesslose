@@ -100,8 +100,10 @@ document.getElementById('start').onclick = async function () {
             for (let i = randindex; i < goodnet.layers.length - 1; i++) {
                newnet.layers[i] = goodnet.layers[i].copy(newnet)
             }
-            for (const nextlayer of newnet.layers) {
-               nextlayer.fixReceivingWeights()
+            for (const layer of newnet.layers) {
+               if (layer.index !== 0) {
+                  layer.fixReceivingWeights()
+               }
             }
          }
       }
