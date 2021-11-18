@@ -110,17 +110,21 @@ globalThis.Layer = class Layer {
       if (this.receivingWeights === null) {
          layerCopy.receivingWeights = null
       } else {
-         layerCopy.receivingWeights = []
-         for (let i = 0; i < newnn.layers[layerCopy.index - 1].length; i++) {
-            layerCopy.receivingWeights[i] = []
+         layerCopy.fixReceivingWeights(this.receivingWeights)
+      }
 
-            for (let j = 0; j < layerCopy.neurons.length; j++) {
-               layerCopy.receivingWeights[i].push(this.receivingWeights?.[i]?.[j] ?? randomInRange(-1, 1))
-            }
+      return layerCopy
+   }
+
+   fixReceivingWeights(oldWeights=this.receivingWeights) {
+      this.receivingWeights = []
+      for (let i = 0; i < this.nn.layers[this.index - 1].length; i++) {
+         this.receivingWeights[i] = []
+
+         for (let j = 0; j < this.neurons.length; j++) {
+            this.receivingWeights[i].push(oldWeights?.[i]?.[j] ?? randomInRange(-1, 1))
          }
       }
-      
-      return layerCopy
    }
 
    *[Symbol.iterator]() {
