@@ -96,6 +96,32 @@ globalThis.Layer = class Layer {
    }
 
    get length () {return this.neurons.length}
+   
+   copy(newnn) {
+      const layerCopy = Object.create(Layer.prototype)
+      layerCopy.nn = newnn
+      layerCopy.index = this.index
+
+      layerCopy.neurons = []
+      for (let i = 0; i < this.neurons.length; i++) {
+         layerCopy.neurons.push(new Neuron(newnn, layerCopy, layerCopy.index, i))
+      }
+
+      if (this.receivingWeights === null) {
+         layerCopy.receivingWeights = null
+      } else {
+         layerCopy.receivingWeights = []
+         for (let i = 0; i < this.nn.layers[index - 1].length; i++) {
+            layerCopy.receivingWeights[i] = []
+
+            for (let j = 0; j < this.neurons.length; j++) {
+               layerCopy.receivingWeights[i].push(this.receivingWeights?.[i]?.[j] ?? randomInRange(-1, 1))
+            }
+         }
+      }
+      
+      return layerCopy
+   }
 
    *[Symbol.iterator]() {
       throw Error("Iterate over the neurons or weights instead of the layer")
