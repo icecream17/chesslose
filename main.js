@@ -104,6 +104,7 @@ document.getElementById('start').onclick = async function () {
       }
 
       nets.push(newnet)
+      newBots.push(newnet)
       playerIDs = [NUMBER_OF_NETS, 0]
       NUMBER_OF_NETS++
    } else {
