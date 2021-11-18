@@ -95,16 +95,16 @@ async function processGame() {
    await playGame();
 
    const ply = chessgame.history().length;
-   const bonus = ply / 100
+   const bonus = ply
    if (chessgame.in_draw()) {
       nets[playerIDs[0]].updateScore(playerIDs[1], 0 + bonus);
       nets[playerIDs[1]].updateScore(playerIDs[0], 0 + bonus);
    } else if (chessgame.turn() === chessgame.WHITE) {
-      nets[playerIDs[0]].updateScore(playerIDs[1], 7 + bonus); // black earns 1 because chesslose
-      nets[playerIDs[1]].updateScore(playerIDs[0], 3 + bonus);
+      nets[playerIDs[0]].updateScore(playerIDs[1], 700 + bonus); // black earns 1 because chesslose
+      nets[playerIDs[1]].updateScore(playerIDs[0], 300 + bonus);
    } else {
-      nets[playerIDs[0]].updateScore(playerIDs[1], 3 + bonus);
-      nets[playerIDs[1]].updateScore(playerIDs[0], 7 + bonus);
+      nets[playerIDs[0]].updateScore(playerIDs[1], 300 + bonus);
+      nets[playerIDs[1]].updateScore(playerIDs[0], 700 + bonus);
    }
 
    updateTextarea();
