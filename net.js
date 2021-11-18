@@ -85,7 +85,7 @@ globalThis.Layer = class Layer {
       this.receivingWeights = null;
       if (index !== 0) {
          this.receivingWeights = [];
-         for (let i = 0; i < this.nn.layers[index - 1].length; i++) {
+         for (let i = 0; i < this.nn.layers[index - 1].neurons.length; i++) {
             this.receivingWeights[i] = []
 
             for (let j = 0; j < this.neurons.length; j++) {
