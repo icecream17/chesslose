@@ -2,7 +2,7 @@ let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
 let speed = [0, 0, 500]
-let NUMBER_OF_NETS = 17;
+let NUMBER_OF_NETS = 5;
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
