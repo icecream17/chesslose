@@ -96,8 +96,8 @@ document.getElementById('start').onclick = async function () {
       const newnet = new Net(NUMBER_OF_NETS)
       for (const goodnet of goodnets) {
          if (Math.random() < Math.PI / goodnets.length) {
-            const randindex = Math.floor(Math.random() * (goodnet.nets.length - 1)) + 1;
-            for (let i = randindex; i < goodnet.nets.length - 1; i++) {
+            const randindex = Math.floor(Math.random() * (goodnet.layers.length - 1)) + 1;
+            for (let i = randindex; i < goodnet.layers.length - 1; i++) {
                newnet.layers[i] = goodnet.layers[i].copy(newnet)
             }
          }
