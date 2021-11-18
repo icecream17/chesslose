@@ -111,10 +111,10 @@ globalThis.Layer = class Layer {
          layerCopy.receivingWeights = null
       } else {
          layerCopy.receivingWeights = []
-         for (let i = 0; i < this.nn.layers[index - 1].length; i++) {
+         for (let i = 0; i < newnn.layers[layerCopy.index - 1].length; i++) {
             layerCopy.receivingWeights[i] = []
 
-            for (let j = 0; j < this.neurons.length; j++) {
+            for (let j = 0; j < layerCopy.neurons.length; j++) {
                layerCopy.receivingWeights[i].push(this.receivingWeights?.[i]?.[j] ?? randomInRange(-1, 1))
             }
          }
