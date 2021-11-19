@@ -59,11 +59,11 @@ updateTextarea();
 
 async function playGame() {
    // Opening
-   for (let i = 0; i < 10; i++) {
-      const moves = chessgame.moves().filter(move => !move.includes("#"))
-      const move = moves[Math.floor(Math.random() * moves.length)]
-      chessgame.move(move)
-   }
+//    for (let i = 0; i < 10; i++) {
+//       const moves = chessgame.moves().filter(move => !move.includes("#"))
+//       const move = moves[Math.floor(Math.random() * moves.length)]
+//       chessgame.move(move)
+//    }
 
    while (!chessgame.game_over()) {
       const input = getInput();
@@ -208,7 +208,7 @@ Net ${playerIDs[0]} vs Net ${playerIDs[1]}
 ${chessgame.pgn()}`
 
    document.getElementById('info2').value = nets.map(
-      net => `#${net.id} (${net.rating}) -> ${net.totalScore} -> ${net.score.map((thing) => thing?.[0])}`
+      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore)} | ${net.score.map((thing) => thing?.[0])}`
    ).join('\n')
 }
 
