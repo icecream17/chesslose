@@ -22,6 +22,6 @@
     "typescript": "^4.3.5"
   },
   "devDependencies": {
-    "serve": "^12.0.0"
+    "serve": "^13.0.0"
   }
 }
