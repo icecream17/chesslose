@@ -113,7 +113,7 @@ async function processGame() {
    chessgame.reset();
 }
 
-document.getElementById('start').onclick = async function () {
+async function run () {
    let newBots = [];
    if (round !== 0) {
       const totalscore = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
@@ -192,9 +192,12 @@ document.getElementById('start').onclick = async function () {
 }
 
 async function allTheTime() {
-   await document.getElementById('start').onclick()
+   await run()
    allTheTime()
 }
+
+document.getElementById('start').onclick = run
+document.getElementById('forever').onclick = allTheTime
 
 function updateTextarea() {
    document.getElementById('info').value =
