@@ -5,7 +5,6 @@ let speed = [0, 0, 1000]
 let NUMBER_OF_NETS = 5;
 
 async function pause(ms) {
-   if (ms === 0) return "Done!";
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
 }
 
