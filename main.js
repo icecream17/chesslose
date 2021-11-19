@@ -116,14 +116,14 @@ async function processGame() {
 document.getElementById('start').onclick = async function () {
    let newBots = [];
    if (round !== 0) {
-      let totalscore = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
-      let goodnets = nets.filter(net => net.rating > totalscore / nets.length);
+      const totalscore = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
+      const average = totalscore / nets.length
       const newnet = new Net(NUMBER_OF_NETS)
-      for (const goodnet of goodnets) {
-         if (Math.random() < Math.PI / goodnets.length) {
-            const randindex = Math.floor(Math.random() * (goodnet.layers.length - 1)) + 1;
-            for (let i = randindex; i < goodnet.layers.length - 1; i++) {
-               newnet.layers[i] = goodnet.layers[i].copy(newnet)
+      for (const otherNet of nets) {
+         if (Math.random() * Math.PI < otherNet.rating / average) {
+            const randindex = Math.floor(Math.random() * (otherNet.layers.length - 1)) + 1;
+            for (let i = randindex; i < otherNet.layers.length - 1; i++) {
+               newnet.layers[i] = otherNet.layers[i].copy(newnet)
             }
             for (const layer of newnet.layers) {
                if (layer.index !== 0) {
