@@ -1,10 +1,11 @@
 let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
-let speed = [0, 0, 500]
+let speed = [0, 0, 1000]
 let NUMBER_OF_NETS = 5;
 
 async function pause(ms) {
+   if (ms === 0) return "Done!";
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
 }
 
@@ -79,10 +80,10 @@ async function playGame() {
       await pause(speed[0]);
    }
 
-   if (chessgame.in_checkmate()) {
-      await pause(speed[2]);
-   } else {
+   if (chessgame.in_threefold_repetition()) {
       await pause(speed[1]);
+   } else {
+      await pause(speed[2]);
    }
 
    return;
