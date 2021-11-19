@@ -208,7 +208,7 @@ Net ${playerIDs[0]} vs Net ${playerIDs[1]}
 ${chessgame.pgn()}`
 
    document.getElementById('info2').value = nets.map(
-      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore)} | ${net.score.map((thing) => thing?.[0])}`
+      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore) / nets.length} | ${net.score.map((thing) => thing?.[0])}`
    ).join('\n')
 }
 
