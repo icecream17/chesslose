@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021, Jeff Hlywa (jhlywa@gmail.com)
+ * Copyright (c) 2022, Jeff Hlywa (jhlywa@gmail.com)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -1527,10 +1527,7 @@ globalThis.Chess = function (fen) {
           move_string = move_number + '.'
         }
 
-        move_string =
-          move_string +
-          ' ' +
-          move_to_san(move, generate_moves({ legal: true }))
+        move_string + ' ' + move_to_san(move, generate_moves({ legal: true }))
         make_move(move)
       }
 
