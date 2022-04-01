@@ -2,6 +2,7 @@ let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
 let speed = [0, 0, 1000]
+let results = [0, 0, 0]
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -64,18 +65,28 @@ async function playGame() {
       await pause(speed[0]);
    }
 
-   if (chessgame.in_threefold_repetition()) {
-      await pause(speed[1]);
-   } else {
+   if (chessgame.in_stalemate() || chessgame.in_checkmate() || chessgame.in_threefold_repetition()) {
       await pause(speed[2]);
+   } else {
+      await pause(speed[1]);
+   }
+   
+   if (chessgame.in_checkmate()) {
+      if (chessgame.turn() === chessgame.WHITE) {
+         results[0]++
+      } else {
+         results[2]++
+      }
+   } else {
+      results[1]++
    }
 
    return;
 }
 
 async function processGame() {
-   chessgame.header("White", `Net [object Net] ${playerIDs[0]}`);
-   chessgame.header("Black", `Net [object Net] ${playerIDs[1]}`);
+   chessgame.header("White", `random_move`);
+   chessgame.header("Black", `random_move`);
 
    await playGame();
 
