@@ -127,6 +127,17 @@ globalThis.Layer = class Layer {
       }
    }
 
+   combineWith(otherLayer, contribution) {
+      const mini = Math.min(this.receivingWeights.length, otherLayer.receivingWeights.length)
+      for (let i = 0; i < mini; i++) {
+         const minj = Math.min(this.receivingWeights[i].length, otherLayer.receivingWeights[i].length)
+         for (let j = 0; j < minj; j++) {
+            const diff = (otherLayer.receivingWeights[i][j] - this.receivingWeights[i][j]) * contribution
+            this.receivingWeights[i][j] += diff
+         }
+      }
+   }
+
    *[Symbol.iterator]() {
       throw Error("Iterate over the neurons or weights instead of the layer")
    }
@@ -134,6 +145,20 @@ globalThis.Layer = class Layer {
 
 globalThis.Net = class Net {
    #id = null;
+   static fromOthers (nets, id) {
+      const totalrating = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
+      const average = totalscore / nets.length
+      const newnet = new Net(id)
+      const newlayers = []
+      for (const otherNet of nets) {
+         const contribution = (otherNet.rating / average) - Math.random()
+         if (contribution > 0) {
+            newnet.combineWith(otherNet, squishify(contribution))
+         }
+      }
+      return newnet
+   }
+
    constructor (id) {
       this.#id = id;
       this.layers = [];
@@ -150,6 +175,14 @@ globalThis.Net = class Net {
       this.score = [];
 
       this.computed = [];
+   }
+
+   // contribution is [0, 1)
+   combineWith(othernet, contribution) {
+      const end = Math.min(this.layers.length, othernet.layers.length)
+      for (let i = 0; i < end; i++) {
+         this.layers[i].combineWith(othernet.layers[i], contribution)
+      }
    }
 
    get id () {return this.#id;}
