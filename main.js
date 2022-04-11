@@ -116,26 +116,7 @@ async function processGame() {
 async function run () {
    let newBots = [];
    if (round !== 0) {
-      const totalscore = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
-      const average = totalscore / nets.length
-      const newnet = new Net(NUMBER_OF_NETS)
-      for (const otherNet of nets) {
-         if (Math.random() * Math.PI < otherNet.rating / average) {
-            const randindex = Math.floor(Math.random() * (otherNet.layers.length - 1)) + 1;
-            for (let i = randindex; i < otherNet.layers.length - 1; i++) {
-               newnet.layers[i] = otherNet.layers[i].copy(newnet)
-            }
-            for (const layer of newnet.layers) {
-               if (layer.index !== 0) {
-                  layer.fixReceivingWeights()
-               }
-            }
-            if (newnet.layers[newnet.layers.length - 1].neurons.length !== 3) {
-               newnet.layers.push(new Layer(newnet, newnet.layers.length, 3));
-            }
-         }
-      }
-
+      const newnet = Net.fromOthers(nets, NUMBER_OF_NETS)
       nets.push(newnet)
       newBots.push(newnet.id)
       playerIDs = [newnet.id, 0]
