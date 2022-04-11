@@ -1448,7 +1448,7 @@ globalThis.Chess = function (fen) {
         if (board[i] == null) {
           row.push(null)
         } else {
-          row.push({ type: board[i].type, color: board[i].color })
+          row.push({ square: algebraic(i), type: board[i].type, color: board[i].color })
         }
         if ((i + 1) & 0x88) {
           output.push(row)
@@ -1527,7 +1527,8 @@ globalThis.Chess = function (fen) {
           move_string = move_number + '.'
         }
 
-        move_string + ' ' + move_to_san(move, generate_moves({ legal: true }))
+        move_string =
+          move_string + ' ' + move_to_san(move, generate_moves({ legal: true }))
         make_move(move)
       }
 
