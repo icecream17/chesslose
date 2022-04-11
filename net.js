@@ -147,9 +147,8 @@ globalThis.Net = class Net {
    #id = null;
    static fromOthers (nets, id) {
       const totalrating = nets.reduce((totalrating, currentnet) => totalrating + currentnet.rating, 0);
-      const average = totalscore / nets.length
+      const average = totalrating / nets.length
       const newnet = new Net(id)
-      const newlayers = []
       for (const otherNet of nets) {
          const contribution = (otherNet.rating / average) - Math.random()
          if (contribution > 0) {
