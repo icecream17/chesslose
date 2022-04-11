@@ -143,7 +143,8 @@ globalThis.Net = class Net {
          this.layers.push(new Layer(this, i));
       }
 
-      this.layers.push(new Layer(this, this.layers.length, 3));
+      // Output layer is from[row,col] to[row,col] promotion
+      this.layers.push(new Layer(this, this.layers.length, 5));
 
       this.lastOut = null
       this.score = [];
