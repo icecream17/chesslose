@@ -73,9 +73,9 @@ async function playGame() {
    
    if (chessgame.in_checkmate()) {
       if (chessgame.turn() === chessgame.WHITE) {
-         results[0]++
-      } else {
          results[2]++
+      } else {
+         results[0]++
       }
    } else {
       results[1]++
@@ -110,8 +110,7 @@ document.getElementById('forever').onclick = allTheTime
 
 function updateTextarea() {
    document.getElementById('info').value = chessgame.pgn()
-
-   //document.getElementById('info2').value
+   document.getElementById('info2').value = `WDL: ${results.join('-')}`
 }
 
 
