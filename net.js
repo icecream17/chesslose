@@ -128,6 +128,7 @@ globalThis.Layer = class Layer {
    }
 
    combineWith(otherLayer, contribution) {
+      if (this.receivingWeights === null || otherLayer.receivingWeights === null) return;
       const mini = Math.min(this.receivingWeights.length, otherLayer.receivingWeights.length)
       for (let i = 0; i < mini; i++) {
          const minj = Math.min(this.receivingWeights[i].length, otherLayer.receivingWeights[i].length)
