@@ -243,7 +243,7 @@ function getInput() {
 
 function doMove(output) {
    function sqToRowCol(sq) {
-      return [Number(movePart[1]), ("abcdefgh".indexOf(movePart[0])]
+      return [Number(movePart[1]), "abcdefgh".indexOf(movePart[0])]
    }
 
    function distance(rowCol1, rowCol2) {
