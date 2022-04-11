@@ -242,8 +242,13 @@ function getInput() {
 }
 
 function doMove(output) {
-   function toNumber(movePart) {
-      return (("abcdefgh".indexOf(movePart[0]) * 8) + Number(movePart[1]) - 32) / 64
+   function sqToRowCol(sq) {
+      return [Number(movePart[1]), ("abcdefgh".indexOf(movePart[0])]
+   }
+
+   function distance(rowCol1, rowCol2) {
+      return Math.abs(rowCol1[0] - rowCol2[0]) +
+         Math.abs(rowCol1[1] - rowCol2[1])
    }
 
    function promotionNumber(val) {
@@ -254,21 +259,25 @@ function doMove(output) {
       else if (val === 'q') return 1;
    }
 
-   let moves = chessgame.moves({ verbose: true });
-   let movesToNumber = []
+   function outToRowCol(out1, out2) {
+      return [(out1 + 1) * 4, (out2 + 1) * 4]
+   }
 
+   const outRowCol = [outToRowCol(output[0], output[1]), outToRowCol(output[2], output[3])]
+   const moves = chessgame.moves({ verbose: true });
+   const movesToNumber = []
    for (const move of moves) {
-      movesToNumber.push([toNumber(move.from), toNumber(move.to), promotionNumber(move?.promotion)])
+      movesToNumber.push([sqToRowCol(move.from), sqToRowCol(move.to), promotionNumber(move?.promotion)])
    }
 
    let best = [Infinity, moves[0]]
    for (let i = 0; i < movesToNumber.length; i++) {
       let num = movesToNumber[i]
 
-      let cost = 0;
-      cost += Math.abs(num[0] - output[0])
-      cost += Math.abs(num[1] - output[1])
-      cost += 0.01 * Math.abs(num[2] - output[2])
+      const cost =
+           distance(outRowCol[0], num[0])
+         + distance(outRowCol[1], num[1])
+         + 0.01 * Math.abs(num[2] - output[4])
 
       if (best[0] > cost) {
          best = [cost, moves[i]]
