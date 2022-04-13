@@ -45,6 +45,20 @@ globalThis.Neuron = class Neuron {
       this.indexOfLayer = indexOfLayer;
       this.indexInLayer = indexInLayer;
    }
+   
+   toJSON () {
+      return {
+         indexOfLayer: this.indexOfLayer,
+         indexInLayer: this.indexInLayer,
+         bias: this.#bias,
+      }
+   }
+   
+   static fromJSON(nn, layer, { indexOfLayer, indexInLayer, bias }) {
+      const neuron = new Neuron(nn, layer, indexOfLayer, indexInLayer)
+      neuron.#bias = bias
+      return neuron
+   }
 
    get value () {
       if (this.indexOfLayer === 0) return squishify(this.#value + this.#bias);
@@ -93,6 +107,21 @@ globalThis.Layer = class Layer {
             }
          }
       }
+   }
+
+   toJSON () {
+      return {
+         index: this.index,
+         neurons: this.neurons,
+         receivingWeights: this.receivingWeights,
+      }
+   }
+   
+   static fromJSON (nn, { index, neurons, receivingWeights }) {
+      const layer = new Layer(nn, index, 0)
+      layer.neurons = neurons.map(neuron => Neuron.fromJSON(nn, layer, neuron))
+      layer.receivingWeights = receivingWeights
+      return layer
    }
 
    get length () {return this.neurons.length}
@@ -175,6 +204,15 @@ globalThis.Net = class Net {
       this.score = [];
 
       this.computed = [];
+   }
+
+   static fromJSON ({ id, layers, lastOut, score, computed }) {
+      const net = new Net(id)
+      net.layers = layers.map(layer => Layer.fromJSON(net, layer))
+      net.lastOut = lastOut
+      net.score = score
+      net.computed = computed
+      return net
    }
 
    // contribution is [0, 1)
