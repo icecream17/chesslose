@@ -273,3 +273,15 @@ function displayPosition () {
    updateTextarea()
 }
 
+function save () {
+   // nets, round, games, gameID, playerIDs
+   localStorage.setItem('data', { nets, round, games, gameID, playerIDs })
+}
+
+function load () {
+   ({ nets, round, games, gameID, playerIDs } = JSON.parse(localStorage.getItem('data')));
+   nets = nets.map(net => Net.fromJSON(net))
+}
+
+load()
+
