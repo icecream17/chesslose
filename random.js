@@ -78,13 +78,17 @@ function adjudicate(game) {
          isForcedDraw = false
       }
       game.undo()
-      if (!isForcedDraw) break;
    }
 
    if (isForcedDraw) {
       game.set_comment("Draw - dead position - " + cause.value)
       results[1]++
       return true
+   }
+
+   // Do not adjudicate as a win if there's a draw
+   if (cause.value !== null) {
+      return false
    }
 
    // Various tablebase wins
