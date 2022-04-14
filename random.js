@@ -72,7 +72,7 @@ function adjudicate(game) {
          cause.update("stalemate")
       } else if (game.insufficient_material()) {
          cause.update("insufficient material")
-      } else if (game.threefold_repetition()) {
+      } else if (game.in_threefold_repetition()) {
          cause.update("threefold repetition")
       } else {
          isForcedDraw = false
