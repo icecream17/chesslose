@@ -51,6 +51,65 @@ let gameID = 0
 
 updateTextarea();
 
+function adjudicate(game) {
+   // If all moves lead to a draw, adjudicate one move early
+   let isForcedDraw = true
+   for (const move of game.moves({ verbose: true })) {
+      game.move(move)
+      if (!game.in_draw()) {
+         isForcedDraw = false
+      }
+      game.pop()
+   }
+
+   if (isForcedDraw) {
+      game.set_comment("Draw - dead position")
+      results[1]++
+      return true
+   }
+
+   // Various tablebase wins
+   // random_move draws so many of these wins
+   const bPieces = { count: 0 }
+   const wPieces = { count: 0 }
+   for (const [i, row] of game.board()) {
+      for (const [j, square] of row) {
+         if (square !== null) {
+            const pieceType = square.type === 'b'
+               ? (i + j) & 1 ? 'db' : 'lb'
+               : square.type
+            if (square.color === 'b') {
+               if (pieceType !== 'k') {bPieces.count++}
+               bPieces[pieceType] = pieceType in bPieces ? bPieces[pieceType] + 1 : 1
+            }
+            if (square.color === 'w') {
+               if (pieceType !== 'k') {wPieces.count++}
+               wPieces[pieceType] = pieceType in wPieces ? wPieces[pieceType] + 1 : 1
+            }
+         }
+      }
+   }
+
+   const [worse, better] = bPieces.length < wPieces.length ? [bPieces, wPieces] : [wPieces, bPieces]
+   if (worse.count === 0) {
+      if (
+         better.r ||
+         better.q ||
+         better.db && better.n ||
+         better.db && better.lb ||
+         better.lb && better.n ||
+         better.n >= 3 ||
+         better.p >= 2
+      ) {
+         game.set_comment("Win - adjudication")
+         results[better === bPieces ? 2 : 0]++
+         return true
+      }
+   }
+
+   return false
+}
+
 async function playGame() {
    // Opening
 //    for (let i = 0; i < 10; i++) {
@@ -59,7 +118,7 @@ async function playGame() {
 //       chessgame.move(move)
 //    }
 
-   while (!chessgame.game_over()) {
+   while (!chessgame.game_over() || adjudicate(chessgame)) {
       doMove();
       displayPosition()
       await pause(speed[0]);
