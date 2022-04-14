@@ -118,7 +118,7 @@ async function playGame() {
 //       chessgame.move(move)
 //    }
 
-   while (!chessgame.game_over() || adjudicate(chessgame)) {
+   while (!(chessgame.game_over() || adjudicate(chessgame))) {
       doMove();
       displayPosition()
       await pause(speed[0]);
