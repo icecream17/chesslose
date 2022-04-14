@@ -90,7 +90,7 @@ function adjudicate(game) {
       }
    }
 
-   const [worse, better] = bPieces.length < wPieces.length ? [bPieces, wPieces] : [wPieces, bPieces]
+   const [worse, better] = bPieces.count < wPieces.count ? [bPieces, wPieces] : [wPieces, bPieces]
    if (worse.count === 0) {
       if (
          better.r ||
