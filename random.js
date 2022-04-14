@@ -54,16 +54,35 @@ updateTextarea();
 function adjudicate(game) {
    // If all moves lead to a draw, adjudicate one move early
    let isForcedDraw = true
+   let cause = {
+      value: null,
+      update(val) {
+         if (this.value === null) {
+            this.value = val
+         } else if (this.value !== val) {
+            this.value = "multiple"
+         }
+      }
+   }
    for (const move of game.moves({ verbose: true })) {
       game.move(move)
-      if (!game.in_draw()) {
+      if (game.in_fifty_move_rule()) {
+         cause.update("fifty moves")
+      } else if (game.in_stalemate()) {
+         cause.update("stalemate")
+      } else if (game.insufficient_material()) {
+         cause.update("insufficient material")
+      } else if (game.threefold_repetition()) {
+         cause.update("threefold repetition")
+      } else {
          isForcedDraw = false
       }
       game.undo()
+      if (!isForcedDraw) break;
    }
 
    if (isForcedDraw) {
-      game.set_comment("Draw - dead position")
+      game.set_comment("Draw - dead position - " + cause.value)
       results[1]++
       return true
    }
