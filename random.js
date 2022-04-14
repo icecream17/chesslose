@@ -59,7 +59,7 @@ function adjudicate(game) {
       if (!game.in_draw()) {
          isForcedDraw = false
       }
-      game.pop()
+      game.undo()
    }
 
    if (isForcedDraw) {
