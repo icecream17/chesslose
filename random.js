@@ -137,10 +137,14 @@ async function playGame() {
 //       chessgame.move(move)
 //    }
 
-   while (!chessgame.game_over()) {
+   while (true) {
       doMove();
       displayPosition()
       await pause(speed[0]);
+
+      if (chessgame.game_over()) {
+         break
+      }
 
       if (adjudicate(chessgame)) {
          await pause(speed[2]);
