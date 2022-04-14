@@ -1414,6 +1414,11 @@ globalThis.Chess = function (fen) {
       )
     },
 
+    // added by icecream17
+    in_fifty_move_rule: function () {
+      return half_moves >= 100
+    },
+
     insufficient_material: function () {
       return insufficient_material()
     },
