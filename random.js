@@ -72,8 +72,8 @@ function adjudicate(game) {
    // random_move draws so many of these wins
    const bPieces = { count: 0 }
    const wPieces = { count: 0 }
-   for (const [i, row] of game.board()) {
-      for (const [j, square] of row) {
+   for (const [i, row] of game.board().entries()) {
+      for (const [j, square] of row.entries()) {
          if (square !== null) {
             const pieceType = square.type === 'b'
                ? (i + j) & 1 ? 'db' : 'lb'
