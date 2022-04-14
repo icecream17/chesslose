@@ -124,7 +124,11 @@ function adjudicate(game) {
          better.n >= 3 ||
          better.p >= 2
       ) {
-         game.set_comment("Win - adjudication")
+         game.set_comment(
+            (
+               worse === wPieces ? "Black wins" : "White wins"
+            ) + " by adjudication"
+         )
          results[better === bPieces ? 2 : 0]++
          return true
       }
