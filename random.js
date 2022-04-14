@@ -118,10 +118,15 @@ async function playGame() {
 //       chessgame.move(move)
 //    }
 
-   while (!(chessgame.game_over() || adjudicate(chessgame))) {
+   while (!chessgame.game_over()) {
       doMove();
       displayPosition()
       await pause(speed[0]);
+
+      if (adjudicate(chessgame)) {
+         await pause(speed[2]);
+         return
+      }
    }
 
    if (chessgame.in_stalemate() || chessgame.in_checkmate() || chessgame.in_threefold_repetition()) {
