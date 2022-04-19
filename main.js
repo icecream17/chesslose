@@ -179,6 +179,8 @@ async function allTheTime() {
 
 document.getElementById('start').onclick = run
 document.getElementById('forever').onclick = allTheTime
+document.getElementById('load').onclick = load
+document.getElementById('save').onclick = save
 
 function updateTextarea() {
    document.getElementById('info').value =
@@ -271,5 +273,15 @@ function doMove(output) {
 function displayPosition () {
    chessboard.position(chessgame.fen(), false)
    updateTextarea()
+}
+
+function save () {
+   // nets, round, games, gameID, playerIDs
+   localStorage.setItem('data', { nets, round, games, gameID, playerIDs })
+}
+
+function load () {
+   ({ nets, round, games, gameID, playerIDs } = JSON.parse(localStorage.getItem('data')));
+   nets = nets.map(net => Net.fromJSON(net))
 }
 
