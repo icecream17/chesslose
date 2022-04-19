@@ -179,6 +179,8 @@ async function allTheTime() {
 
 document.getElementById('start').onclick = run
 document.getElementById('forever').onclick = allTheTime
+document.getElementById('load').onclick = load
+document.getElementById('save').onclick = save
 
 function updateTextarea() {
    document.getElementById('info').value =
@@ -282,6 +284,4 @@ function load () {
    ({ nets, round, games, gameID, playerIDs } = JSON.parse(localStorage.getItem('data')));
    nets = nets.map(net => Net.fromJSON(net))
 }
-
-load()
 
