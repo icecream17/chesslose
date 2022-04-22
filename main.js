@@ -277,7 +277,7 @@ function displayPosition () {
 
 function save () {
    // nets, round, games, gameID, playerIDs
-   localStorage.setItem('data', { nets, round, games, gameID, playerIDs })
+   localStorage.setItem('data', JSON.stringify({ nets, round, games, gameID, playerIDs }))
 }
 
 function load () {
