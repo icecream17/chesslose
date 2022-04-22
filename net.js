@@ -212,6 +212,11 @@ globalThis.Net = class Net {
       net.lastOut = lastOut
       net.score = score
       net.computed = computed
+      for (let i = 0; i < score.length; i++) {
+         if (score[i] === null) {
+            delete score[index]
+         }
+      }
       return net
    }
 
