@@ -17,7 +17,7 @@
   },
   "homepage": "https://github.com/icecream17/chesslose#readme",
   "dependencies": {
-    "@types/chess.js": "^0.11.2",
+    "@types/chess.js": "^0.13.0",
     "eslint": "^8.0.0",
     "typescript": "^4.3.5"
   },
