@@ -136,7 +136,7 @@ async function run () {
 
          // play the reverse game, only needed for non new bots
          if (!newBots.includes(j)) {
-            playerIDs[j, i]
+            playerIDs = [j, i]
             await processGame();
          }
       }
@@ -165,9 +165,19 @@ Net ${playerIDs[0]} vs Net ${playerIDs[1]}
 
 ${chessgame.pgn()}`
 
-   document.getElementById('info2').value = nets.map(
-      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore) / nets.length} | ${net.score.map((thing) => thing?.[0])}`
+   const sortedNets = nets.slice().sort((a, b) => b.rating === a.rating ? b.totalScore - a.totalScore : b.rating - a.rating)
+
+   document.getElementById('info2').value = sortedNets.map(
+      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore) / nets.length} | ${fixIndices(sortedNets, net.score.map((thing) => thing?.[0]))}`
    ).join('\n')
+}
+
+function fixIndices(sortedNets, scores) {
+   const newScores = []
+   for (const net of sortedNets) {
+      newScores[newScores.length] = scores[net.id]
+   }
+   return newScores
 }
 
 function getInput() {
