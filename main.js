@@ -135,7 +135,7 @@ async function run () {
          await processGame();
 
          // play the reverse game, only needed for non new bots
-         if (!newBots.contains(j)) {
+         if (!newBots.includes(j)) {
             playerIDs[j, i]
             await processGame();
          }
