@@ -23,12 +23,15 @@
 
 <body>
    <div id="board1" style="width: 400px"></div>
-   <br>
-   <button type="button" id="start">Start</button>
-   <button type="button" id="forever">Go forever</button>
-   <button type="button" id="save">Save</button>
-   <button type="button" id="load">Load</button>
-   <br>
+   <fieldset>
+      <button type="button" id="start">Start</button>
+      <button type="button" id="forever">Go forever</button>
+      <button type="button" id="save">Save</button>
+      <button type="button" id="load">Load</button>
+      <label for="speed0">Move delay: <input type="range" id="speed0" max="1000" value="0" /></label>
+      <label for="speed1">Threefold delay: <input type="range" id="speed0" max="10000" value="0" /></label>
+      <label for="speed2">Game end delay: <input type="range" id="speed0" max="10000" value="1000" /></label>
+   </fieldset>
    <textarea rows="13" cols="200" id="info"></textarea>
    <textarea rows="13" cols="200" id="info2"></textarea>
 </body>
