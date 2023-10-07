@@ -168,7 +168,7 @@ ${chessgame.pgn()}`
    const sortedNets = nets.slice().sort((a, b) => b.rating === a.rating ? b.totalScore - a.totalScore : b.rating - a.rating)
 
    document.getElementById('info2').value = sortedNets.map(
-      net => `#${net.id} r${net.rating} s${net.totalScore} √${Math.sqrt(net.totalScore) / nets.length} | ${fixIndices(sortedNets, net.score.map((thing) => thing?.[0]))}`
+      net => `#${net.id} r${net.rating} s${net.totalScore} /${net.totalScore / net.totalGames} | ${fixIndices(sortedNets, net.score.map((thing) => thing?.[0]))}`
    ).join('\n')
 }
 
