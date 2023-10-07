@@ -2,7 +2,11 @@ let chessboard = Chessboard('board1', getBoardConfig())
 /** @type {Chess} */
 let chessgame = new Chess()
 let speed = [0, 0, 1000]
-let NUMBER_OF_NETS = 5;
+const INITIAL_NETS = 5;
+
+document.getElementById('speed0').onchange = e => speed[0] = Number(e.target.value);
+document.getElementById('speed1').onchange = e => speed[1] = Number(e.target.value);
+document.getElementById('speed2').onchange = e => speed[2] = Number(e.target.value);
 
 async function pause(ms) {
    return await new Promise(resolve => setTimeout(resolve, ms, "Done!"));
@@ -48,7 +52,7 @@ function updateBoard() {
 
 /** @type {Net[]} */
 let nets = [];
-for (let i = 0; i < NUMBER_OF_NETS; i++) nets.push(new Net(i))
+for (let i = 0; i < INITIAL_NETS; i++) nets.push(new Net(i))
 
 let round = 0;
 let games = [];
@@ -94,17 +98,17 @@ async function processGame() {
 
    await playGame();
 
-   const ply = chessgame.history().length;
-   const bonus = ply
+   //const ply = chessgame.history().length;
+   const bonus = 0//ply
    if (chessgame.in_draw()) {
       nets[playerIDs[0]].updateScore(playerIDs[1], 0 + bonus);
       nets[playerIDs[1]].updateScore(playerIDs[0], 0 + bonus);
    } else if (chessgame.turn() === chessgame.WHITE) {
-      nets[playerIDs[0]].updateScore(playerIDs[1], 700 + bonus); // black earns 1 because chesslose
-      nets[playerIDs[1]].updateScore(playerIDs[0], 300 + bonus);
+      nets[playerIDs[0]].updateScore(playerIDs[1], 1 + bonus); // chesslose
+      nets[playerIDs[1]].updateScore(playerIDs[0], 0 + bonus);
    } else {
-      nets[playerIDs[0]].updateScore(playerIDs[1], 300 + bonus);
-      nets[playerIDs[1]].updateScore(playerIDs[0], 700 + bonus);
+      nets[playerIDs[0]].updateScore(playerIDs[1], 0 + bonus);
+      nets[playerIDs[1]].updateScore(playerIDs[0], 1 + bonus);
    }
 
    updateTextarea();
@@ -116,55 +120,24 @@ async function processGame() {
 async function run () {
    let newBots = [];
    if (round !== 0) {
-      const newnet = Net.fromOthers(nets, NUMBER_OF_NETS)
+      const newnet = Net.fromOthers(nets, nets.length)
       nets.push(newnet)
       newBots.push(newnet.id)
       playerIDs = [newnet.id, 0]
-      NUMBER_OF_NETS++
    } else {
       newBots = nets.map((_net, index) => index);
    }
 
-   while (round === 0) {
-      await processGame();
-      playerIDs[1]++;
+   for (const i of newBots) {
+      for (let j = 0; j < nets.length; j++) {
+         if (i === j) continue;
+         playerIDs = [i, j]
+         await processGame();
 
-      if (playerIDs[1] === NUMBER_OF_NETS) {
-         playerIDs[0]++;
-         playerIDs[1] = 0;
-      }
-
-      if (playerIDs[0] === playerIDs[1]) playerIDs[1]++
-      if (playerIDs[1] === NUMBER_OF_NETS) {
-         playerIDs[1] = NUMBER_OF_NETS - 1;
-         break;
-      }
-   }
-
-   let done = [];
-   for (let nonNew = nets.map((net, index) => index).filter(index => !newBots.includes(index)); round !== 0;) {
-      await processGame();
-
-      if (nonNew.includes(playerIDs[0])) {
-         if (playerIDs[1] === newBots[newBots.length - 1]) {
-            if (playerIDs[0] === nonNew[nonNew.length - 1]) {
-               break;
-            }
-            playerIDs[0] = nonNew[nonNew.indexOf(playerIDs[0]) + 1]
-            playerIDs[1] = newBots[0]
-         } else {
-            playerIDs[1] = newBots[newBots.indexOf(playerIDs[1]) + 1]
-         }
-      } else {
-         playerIDs[1]++;
-         if (playerIDs[0] === playerIDs[1]) playerIDs[1]++;
-         if (playerIDs[1] >= nets.length) {
-            if (playerIDs[0] === newBots[newBots.length - 1]) {
-               playerIDs = [nonNew[0], newBots[0]]
-            } else {
-               playerIDs[0] = newBots[newBots.indexOf(playerIDs[0]) + 1]
-               playerIDs[1] = 0
-            }
+         // play the reverse game, only needed for non new bots
+         if (!newBots.contains(j)) {
+            playerIDs[j, i]
+            await processGame();
          }
       }
    }
@@ -173,8 +146,7 @@ async function run () {
 }
 
 async function allTheTime() {
-   await run()
-   allTheTime()
+   while (true) await run();
 }
 
 document.getElementById('start').onclick = run
